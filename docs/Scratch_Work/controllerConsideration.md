@@ -66,7 +66,7 @@ Engine** (Sync).
     *   Ask the Engine: "Can this be processed synchronously?"
     *   If No -> Send to Queue/Execute.
     *   If Yes -> Call Engine.
-
+KJ_Toole_Design theo
 ---
 
 ### 3. Critical Technical Considerations for Your Controller
@@ -85,7 +85,66 @@ from these collections *before* sending to the Engine.
 3.  **Order of Operations:**
     *   Your Controller must define if Logic Engines run **Parallel** or **Sequential**.
     *   *Recommendation:* Default to Sequential within a transaction, but use Parallel for things like validation
-(pre-save) vs. enrichment (post-save).
+(pre-save) vs. enrichment (post-save).public with sharing class KJ_Tool_TriggerContext {
+    //*-- Member Variables ------------------------------------------------------------------------
+    public Boolean isAfter      { get; private set; }
+    public Boolean isBefore     { get; private set; }
+
+    public Boolean isInsert     { get; private set; }
+    public Boolean isUpdate     { get; private set; }
+    public Boolean isDelete     { get; private set; }
+    public Boolean isUndelete   { get; private set; }
+
+    public List<SObject> newList    { get; private set; }
+    public List<SObject> oldList    { get; private set; }
+    public Map<Id, SObject> newMap  { get; private set; }
+    public Map<Id, SObject> oldMap  { get; private set; }
+
+    //*-- Member Methods --------------------------------------------------------------------------
+    // Factory method
+    public static KJ_Tool_TriggerContext build(){
+        KJ_Tool_TriggerContext newContext = new KJ_Tool_TriggerContext();
+
+        newContext.isBefore = Trigger.isBefore;
+        newContext.isAfter = Trigger.isAfter;
+
+        newContext.isInsert = Trigger.isInsert; 
+        newContext.isUpdate = Trigger.isUpdate;
+        newContext.isDelete = Trigger.isDelete;
+        newContext.isUndelete = Trigger.isUndelete;
+
+        newContext.newList = Trigger.new;
+        newContext.oldList = Trigger.old;
+        newContext.newMap = Trigger.newMap;
+        newContext.oldMap = Trigger.oldMap;
+
+        return newContext;
+    }
+
+    // Returns whether specified field has changed on specified record
+    public Boolean didFieldChange(Id targetRecordId, schema.SObjectField targetField){
+        SObject newRecord = newMap.get(targetRecordId);
+        SObject oldRecord = oldMap.get(targetRecordId);
+
+        Boolean result = newRecord.get(targetField) != oldRecord.get(targetField);
+
+        return result;
+    }
+    
+    // Returns list of records that had their specified field changed
+    public List<SObject> getChangedRecords(Schema.SObjectField targetField){
+        List<SObject> changedRecords = new List<SObject>();
+
+        for(SObject currentRecord : newList) {
+            if (didFieldChange(currentRecord.Id, targetField)){
+                changedRecords.add(currentRecord);
+            }
+        }
+
+        return changedRecords;
+    }
+
+}
 
 ---
 
