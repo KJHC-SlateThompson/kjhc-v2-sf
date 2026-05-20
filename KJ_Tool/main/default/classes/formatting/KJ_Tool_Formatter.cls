@@ -7,11 +7,11 @@
 */
 
 public with sharing class KJ_Tool_Formatter {
-    //*-- Constants -------------------------------------------------------------------------------
+//*-- Constants -------------------------------------------------------------------------------
     public static final String HORIZONTAL_DELIMITER = '; ';
     public static final String VERTICAL_DELIMITER = '\n===============================================================================================\n';
 
-    //*-- Member Methods --------------------------------------------------------------------------
+//*-- Member Methods --------------------------------------------------------------------------
     //* toString()
     // origin to string
     public static String toString (KJ_Tool_Origin targetOrigin){
@@ -30,21 +30,17 @@ public with sharing class KJ_Tool_Formatter {
         result += toString(logEntry.level);
         result += HORIZONTAL_DELIMITER;
  
-
         result += 'Origin: ';
         result += toString(logEntry.origin);
         result += HORIZONTAL_DELIMITER;
     
-
         result += 'Timestamp: ';
         result += (logEntry.timestamp != null) ? logEntry.timestamp.format() : 'UNSPECIFIED';
         result += HORIZONTAL_DELIMITER + '\n\n'; //end of line 1 of log entry string
 
-
         result += 'Message: \n';
         result += logEntry.message ?? 'Message contained NULL value';
         result += VERTICAL_DELIMITER;
-
 
         return result;
     }
@@ -67,7 +63,7 @@ public with sharing class KJ_Tool_Formatter {
         
         result += 'Exception count: ' targetResult.exceptions.size() + '\n';
         result += 'Has Fatals: ' + (targetResult.hasFatals ? 'TRUE' : 'FALSE' ) + '\n';
-        result += 'Has Highs: ' + (targetResult.hasHighs ? 'TRUE' : 'FALSE') + '\n';
+        result += 'Has Highs: ' + (targetResult.hasHighs ? 'TRUE' : 'FALSE') + '\n'; 
         result += 'Has Lows: ' + (targetResult.hasLows ? 'TRUE' : 'FALSE') + '\n\n';
 
         result += 'Origin: ' + toString(targetResult.origin) + '\n';
@@ -83,7 +79,7 @@ public with sharing class KJ_Tool_Formatter {
         result += 'Level: ' + toString(e.level) + '\n';
         result += 'Origin: (' + toString(e.origin) + ')\n';
         result += 'Message: \n' + e.message + '\n';
-
+        
         return result;
     }
      public static String toString(KJ_Tool_Exception.Code targetCode){

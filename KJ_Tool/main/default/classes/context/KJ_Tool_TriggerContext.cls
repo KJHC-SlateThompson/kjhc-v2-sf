@@ -15,10 +15,10 @@ public with sharing class KJ_Tool_TriggerContext {
     public Boolean isDelete     { get; private set; }
     public Boolean isUndelete   { get; private set; }
 
-    public List<SObject> newList { get; private set; }
-    public List<SObject> oldList { get; private set; }
-    public Map<Id, SObject> newMap { get; private set; }
-    public Map<Id, SObject> oldMap { get; private set; }
+    public List<SObject> newList    { get; private set; }
+    public List<SObject> oldList    { get; private set; }
+    public Map<Id, SObject> newMap  { get; private set; }
+    public Map<Id, SObject> oldMap  { get; private set; }
 
     //*-- Member Methods --------------------------------------------------------------------------
     // Factory method
@@ -28,7 +28,7 @@ public with sharing class KJ_Tool_TriggerContext {
         newContext.isBefore = Trigger.isBefore;
         newContext.isAfter = Trigger.isAfter;
 
-        newContext.isInsert = Trigger.isInsert;
+        newContext.isInsert = Trigger.isInsert; 
         newContext.isUpdate = Trigger.isUpdate;
         newContext.isDelete = Trigger.isDelete;
         newContext.isUndelete = Trigger.isUndelete;

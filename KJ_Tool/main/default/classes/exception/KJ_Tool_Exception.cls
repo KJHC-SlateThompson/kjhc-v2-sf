@@ -8,10 +8,9 @@
 public with sharing class KJ_Tool_Exception extends Exception{
     //*-- Constants -------------------------------------------------------------------------------
     public enum Code {
-        DEFAULT_CODE,
+        DEFAULT_CODE,       
         TEST_EXCEPTION
     }
-
     public enum Level {
         LOW,
         HIGH,
