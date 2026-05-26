@@ -35,6 +35,7 @@ KJ_Tool/main/default/classes/
 │   └── RetryHandler.cls          ← retry logic with backoff
 │
 ├── context/
+    ├── Origin.cls
 │   ├── TriggerContext.cls        ← standardized trigger state
 │   ├── UserContext.cls           ← current user, profile, permissions
 │   └── OrgContext.cls            ← org-wide settings, custom metadata

@@ -12,7 +12,7 @@ External World
       │
       ▼
 ┌─────────────────────────────────────────┐
-│  KJ_AUTOMATION (entry point layer)      │
+│  KJ_Dispatch (entry point layer)        │
 │  Trigger Handlers                       │
 │  Schedulers                             │
 │  NO logic. Validates context,           │
