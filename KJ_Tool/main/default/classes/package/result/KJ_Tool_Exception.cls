@@ -26,10 +26,10 @@ public with sharing class KJ_Tool_Exception extends Exception{
     //*-- Member Methods --------------------------------------------------------------------------
     // constructor
     public KJ_Tool_Exception(){
-        this.code = Code.DEFAULT_CODE;
-        this.level = Level.LOW;
-        this.message = '';
-        this.origin = new KJ_Tool_Origin();
+        this.code       = Code.DEFAULT_CODE;
+        this.level      = Level.LOW;
+        this.message    = '';
+        this.origin     = new KJ_Tool_Origin();
     }
     // factory methods
     public static KJ_Tool_Exception build(Code newCode, Level newLevel, String newMessage, KJ_Tool_Origin newOrigin){

@@ -18,7 +18,19 @@ public with sharing class KJ_Tool_UserContext {
     public String   roleName    { get; private set; }
 
     //*-- Member Methods --------------------------------------------------------------------------
-    // factory method
+    // Constructor and build methods
+    public KJ_Tool_UserContext(){
+        this.userId         = new Id();
+        this.userName       = '';
+        this.userEmail      = '';
+        
+        this.profileId      = new Id();
+        this.profileName    = '';
+        
+        this.roleId         = new Id();
+        this.roleName       = '';
+    }
+
     public static KJ_Tool_UserContext build(){
         KJ_Tool_UserContext newContext = new KJ_Tool_UserContext();
 
@@ -32,15 +44,15 @@ public with sharing class KJ_Tool_UserContext {
             LIMIT 1
         ];
  
-        newContext.userId          = runningUser.Id;
-        newContext.userName        = runningUser.Name;
-        newContext.userEmail       = runningUser.Email;
+        newContext.userId          = runningUser.Id             ?? newContext.userId;
+        newContext.userName        = runningUser.Name           ?? newContext.userName;
+        newContext.userEmail       = runningUser.Email          ?? newContext.userEmail;
  
-        newContext.profileId       = runningUser.ProfileId;
-        newContext.profileName     = runningUser.Profile.Name;
+        newContext.profileId       = runningUser.ProfileId      ?? newContext.profileId;
+        newContext.profileName     = runningUser.Profile.Name   ?? newContext.profileName;
  
-        newContext.roleId          = runningUser.UserRoleId;
-        newContext.roleName        = (runningUser.UserRole != null) ? runningUser.UserRole.Name : null;
+        newContext.roleId          = runningUser.UserRoleId     ?? newContext.roleId;
+        newContext.roleName        = runningUser.UserRole.Name  ?? newContext.roleName;
 
         return newContext;
     }

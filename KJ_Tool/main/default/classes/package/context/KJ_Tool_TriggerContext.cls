@@ -7,8 +7,8 @@
 */
 public with sharing class KJ_Tool_TriggerContext {
     //*-- Member Variables ------------------------------------------------------------------------
-    public Boolean isAfter      { get; private set; }
     public Boolean isBefore     { get; private set; }
+    public Boolean isAfter      { get; private set; }
 
     public Boolean isInsert     { get; private set; }
     public Boolean isUpdate     { get; private set; }
@@ -21,22 +21,37 @@ public with sharing class KJ_Tool_TriggerContext {
     public Map<Id, SObject> oldMap  { get; private set; }
 
     //*-- Member Methods --------------------------------------------------------------------------
-    // Factory method
+    // Constructor and build methods
+    public KJ_Tool_TriggerContext(){
+        this.isBefore   = false;
+        this.isAfter    = false;
+
+        this.isInsert   = false;
+        this.isUpdate   = false;
+        this.isDelete   = false;
+        this.isUndelete = false;
+
+        this.newList    = new List<SObject>();
+        this.oldList    = new List<SObject>();
+        this.newMap     = new Map<Id, SObject>();
+        this.oldMap     = new Map<Id, SObject>();
+    }
+
     public static KJ_Tool_TriggerContext build(){
         KJ_Tool_TriggerContext newContext = new KJ_Tool_TriggerContext();
 
-        newContext.isBefore = Trigger.isBefore;
-        newContext.isAfter = Trigger.isAfter;
+        newContext.isBefore     = Trigger.isBefore      ?? newContext.isBefore;
+        newContext.isAfter      = Trigger.isAfter       ?? newContext.isAfter;
 
-        newContext.isInsert = Trigger.isInsert; 
-        newContext.isUpdate = Trigger.isUpdate;
-        newContext.isDelete = Trigger.isDelete;
-        newContext.isUndelete = Trigger.isUndelete;
+        newContext.isInsert     = Trigger.isInsert      ?? newContext.isInsert;
+        newContext.isUpdate     = Trigger.isUpdate      ?? newContext.isUpdate;
+        newContext.isDelete     = Trigger.isDelete      ?? newContext.isDelete;
+        newContext.isUndelete   = Trigger.isUndelete    ?? newContext.isUndelete;
 
-        newContext.newList = Trigger.new;
-        newContext.oldList = Trigger.old;
-        newContext.newMap = Trigger.newMap;
-        newContext.oldMap = Trigger.oldMap;
+        newContext.newList      = Trigger.new           ?? newContext.newList;
+        newContext.oldList      = Trigger.old           ?? newContext.oldList;
+        newContext.newMap       = Trigger.newMap        ?? newContext.newMap;
+        newContext.oldMap       = Trigger.oldMap        ?? newContext.oldMap;
 
         return newContext;
     }

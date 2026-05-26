@@ -88,7 +88,7 @@ public with sharing class KJ_Tool_Result {
     public void setMessage(String newMessage){
         this.message = newMessage ?? this.message;
     }
-    public void addExcepetion(KJ_Tool_Exception e){
+    public void addException(KJ_Tool_Exception e){
         if(e != null){
             exceptions.add(e);
             this.updateFlags();
@@ -107,7 +107,7 @@ public with sharing class KJ_Tool_Result {
             }
         }
         if (hasFatals || hasHighs){
-            isSuccess == false;
+            isSuccess = false;
         }
     }
 }

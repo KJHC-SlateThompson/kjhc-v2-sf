@@ -24,15 +24,14 @@ public with sharing class KJ_Tool_Origin {
     public Id           recordId      { get; private set; }
 
     //*-- Member Methods --------------------------------------------------------------------------
-    // constructor
+    // Constructor and build methods
     public KJ_Tool_Origin(){
         this.sourceType = SourceType.UNSPECIFIED;
-        this.filename = '';
-        this.className = '';
+        this.filename   = '';
+        this.className  = '';
         this.methodName = '';
         this.objectName = '';
     }
-    // Base factory method
     private static KJ_Tool_Origin build(SourceType newSourceType, String newFileName, String newClassName, String newMethodName, String newObjectName, String newRecordId){
         KJ_Tool_Origin newOrigin = new KJ_Tool_Origin();
 
@@ -42,7 +41,6 @@ public with sharing class KJ_Tool_Origin {
         newOrigin.methodName    = newMethodName ?? newOrigin.methodName;
         newOrigin.recordId      = newRecordId   ?? newOrigin.recordId;
         newOrigin.objectName    = newObjectName ?? newOrigin.objectName;
-        newOrigin.RecordId      = newRecordId   ?? newOrigin.RecordId;
         
         return newOrigin;
     }

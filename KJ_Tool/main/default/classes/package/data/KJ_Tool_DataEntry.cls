@@ -16,25 +16,26 @@ public with sharing class KJ_Tool_DataEntry {
     public Object   value       { get; private set; }
 
     //*-- Member Methods --------------------------------------------------------------------------
+    // Constructors & Factory Methods
     public KJ_Tool_DataEntry(){
-        this.label = '';
-        this.dataType = DataType.UNKNOWN;
-        this.value = null;
+        this.label      = '';
+        this.dataType   = DataType.UNKNOWN;
+        this.value      = null;
     }
 
-    static KJ_Tool_DataEntry build(String initLabel, DataType initDataType, Object initValue){
+    public static KJ_Tool_DataEntry build(String initLabel, DataType initDataType, Object initValue){
         KJ_Tool_DataEntry newDataEntry = new KJ_Tool_DataEntry();
 
-        newDataEntry.label      = initLabel;
-        newDataEntry.dataType   = initDataType;
-        newDataEntry.value      = initValue;
+        newDataEntry.label      = initLabel     ?? newDataEntry.label;
+        newDataEntry.dataType   = initDataType  ?? newDataEntry.dataType;
+        newDataEntry.value      = initValue     ?? newDataEntry.value;
     
         return newDataEntry;
     }
-    static KJ_Tool_DataEntry build(DataType initDataType, Object initValue){
+    public static KJ_Tool_DataEntry build(DataType initDataType, Object initValue){
         return build(null, initDataType, initValue);
     }
-    static KJ_Tool_DataEntry build(Object initValue){
+    public static KJ_Tool_DataEntry build(Object initValue){
         return build(null, DataType.UNKNOWN, initValue);
     }
 }

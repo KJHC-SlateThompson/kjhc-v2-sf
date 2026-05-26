@@ -1,6 +1,6 @@
-Show more
-10:07 AM
-This is a great architectural question. Let me think through it carefully before giving you a recommendation.
+
+
+his is a great architectural question. Let me think through it carefully before giving you a recommendation.
 
 The Core Tension
 The question of engine-to-engine communication is really asking: who owns orchestration?
