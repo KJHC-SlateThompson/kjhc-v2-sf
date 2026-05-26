@@ -6,14 +6,14 @@
 */
 public with sharing class KJ_Tool_Package {
     //*-- Member Variables ------------------------------------------------------------------------
-    KJ_Tool_DataBundle      dataBundle;     { get; private set; }
+    public KJ_Tool_DataBundle      dataBundle     { get; private set; }
 
-    KJ_Tool_Result          result;         { get; private set; }
+    public KJ_Tool_Result          result         { get; private set; }
 
-    KJ_Tool_Origin          origin;         { get; private set; }
-    KJ_Tool_OrgContext      orgContext;     { get; private set; }
-    KJ_Tool_UserContext     userContext;    { get; private set; }
-    KJ_Tool_TriggerContext  triggerContext; { get; private set; }
+    public KJ_Tool_Origin          origin         { get; private set; }
+    public KJ_Tool_OrgContext      orgContext     { get; private set; }
+    public KJ_Tool_UserContext     userContext    { get; private set; }
+    public KJ_Tool_TriggerContext  triggerContext { get; private set; }
 
     //*-- Member Methods --------------------------------------------------------------------------
     public KJ_Tool_Package() {

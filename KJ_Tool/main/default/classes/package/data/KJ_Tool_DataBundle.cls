@@ -16,23 +16,20 @@ public with sharing class KJ_Tool_DataBundle {
         this.entries    = new List<KJ_Tool_DataEntry>();
     }
 
-    public static KJ_Tool_DataBundle build(String initLabel, List<KJ_Tool_DataEntry> initEntries){
+    public static KJ_Tool_DataBundle build(List<KJ_Tool_DataEntry> initEntries){
         KJ_Tool_DataBundle newDataBundle = new KJ_Tool_DataBundle();
-
-        newDataBundle.label     = initLabel     ?? newDataBundle.label;
-        newDataBundle.entries   = initEntries   ?? newDataBundle.entries;
+        newDataBundle.entries = initEntries ?? newDataBundle.entries;
 
         return newDataBundle;
     }
-    public static KJ_Tool_DataBundle build(List<KJ_Tool_DataEntry> initEntries){
-        return build(null, initEntries);
-    }
-    public static KJ_Tool_DataBundle build(String initLabel, KJ_Tool_DataEntry initEntry){
+    public static KJ_Tool_DataBundle build(KJ_Tool_DataEntry initEntry){
         return build(initLabel, new List<KJ_Tool_DataEntry>{ initEntry });
     }
-    public static KJ_Tool_DataBundle build(KJ_Tool_DataEntry initEntry){
-        return build(null, new List<KJ_Tool_DataEntry>{ initEntry });
+    public KJ_Tool_DataBundle withLabel(String initLabel){
+        this.label = initLabel ?? this.label;
+        return this;
     }
+
 
     // Mutator methods
     public void add(KJ_Tool_DataEntry newEntry){

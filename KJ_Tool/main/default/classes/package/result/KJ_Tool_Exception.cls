@@ -65,7 +65,7 @@ public with sharing class KJ_Tool_Exception extends Exception{
     }
 
     // Setters
-    public void setLevel(Code newCode){
+    public void setCode(Code newCode){
         this.code = newCode ?? this.code;
     } 
     public void setLevel(Level newLevel){

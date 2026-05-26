@@ -20,14 +20,14 @@ public with sharing class KJ_Tool_UserContext {
     //*-- Member Methods --------------------------------------------------------------------------
     // Constructor and build methods
     public KJ_Tool_UserContext(){
-        this.userId         = new Id();
+        this.userId         = null;
         this.userName       = '';
         this.userEmail      = '';
         
-        this.profileId      = new Id();
+        this.profileId      = null;
         this.profileName    = '';
         
-        this.roleId         = new Id();
+        this.roleId         = null;
         this.roleName       = '';
     }
 
@@ -52,7 +52,7 @@ public with sharing class KJ_Tool_UserContext {
         newContext.profileName     = runningUser.Profile.Name   ?? newContext.profileName;
  
         newContext.roleId          = runningUser.UserRoleId     ?? newContext.roleId;
-        newContext.roleName        = runningUser.UserRole.Name  ?? newContext.roleName;
+        newContext.roleName        = runningUser.UserRoleId != null ? runningUser.UserRole.Name : '';
 
         return newContext;
     }

@@ -23,7 +23,7 @@ public with sharing class KJ_Tool_OrgContext {
     //*-- Member Methods --------------------------------------------------------------------------
     // Constructor and build methods
     public KJ_Tool_OrgContext(){
-        this.orgId          = new Id();
+        this.orgId          = null;
         this.orgName        = '';
         this.instanceUrl    = '';
         this.orgType        = OrgType.SANDBOX;
@@ -42,7 +42,7 @@ public with sharing class KJ_Tool_OrgContext {
         newContext.orgName       = org.Name ?? newContext.orgName;
  
         newContext.instanceUrl   = URL.getOrgDomainUrl().toExternalForm() ?? newContext.instanceUrl;
-        newContext.orgType       = IsSandbox ? OrgType.SANDBOX : OrgType.PRODUCTION;
+        newContext.orgType       = org.IsSandbox ? OrgType.SANDBOX : OrgType.PRODUCTION;
  
         return newContext;
     }

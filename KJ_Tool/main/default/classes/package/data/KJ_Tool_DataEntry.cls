@@ -23,19 +23,17 @@ public with sharing class KJ_Tool_DataEntry {
         this.value      = null;
     }
 
-    public static KJ_Tool_DataEntry build(String initLabel, DataType initDataType, Object initValue){
+    public static KJ_Tool_DataEntry build(Object initValue){
         KJ_Tool_DataEntry newDataEntry = new KJ_Tool_DataEntry();
-
-        newDataEntry.label      = initLabel     ?? newDataEntry.label;
-        newDataEntry.dataType   = initDataType  ?? newDataEntry.dataType;
-        newDataEntry.value      = initValue     ?? newDataEntry.value;
-    
+        newDataEntry.value = initValue ?? newDataEntry.value;
         return newDataEntry;
     }
-    public static KJ_Tool_DataEntry build(DataType initDataType, Object initValue){
-        return build(null, initDataType, initValue);
+    public KJ_Tool_DataEntry withDataType(DataType initDataType){
+        this.dataType = initDataType ?? this.dataType;
+        return this;
     }
-    public static KJ_Tool_DataEntry build(Object initValue){
-        return build(null, DataType.UNKNOWN, initValue);
+    public KJ_Tool_DataEntry withLabel(String initLabel){
+        this.label = initLabel ?? this.label;
+        return this.
     }
 }

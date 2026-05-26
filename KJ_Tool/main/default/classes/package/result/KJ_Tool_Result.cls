@@ -32,6 +32,30 @@ public with sharing class KJ_Tool_Result {
     }
 
     // factory methods
+    public static KJ_Tool_Result build(Boolean isSuccess){
+        KJ_Tool_Result newResult = new KJ_Tool_Result();
+        newResult.isSuccess = isSuccess ?? newResult.isSuccess;
+
+        return newResult;
+    }
+    public KJ_Tool_Result withMessage(String initMessage){
+        this.message = initMessage ?? this.message;
+        return this;
+    }
+    public KJ_Tool_Result withExceptions(List<KJ_Tool_Exception> initList){
+        this.exceptions = initList ?? this.exceptions;
+        this.updateFlags();
+        return this;
+    }
+    public KJ_Tool_Result withException(KJ_Tool_Exception initException){
+        this.exceptions = new List<KJ_Tool_Exception>{ initException } ?? this.exceptions;
+        this.updateFlags();
+        return this;
+    }
+    public KJ_Tool_Result withOrigin(KJ_Tool_Origin initOrigin){
+        this.origin = initOrigin ?? this.origin;
+        return this;
+    }
     public static KJ_Tool_Result build(Boolean isSuccess, String message, List<KJ_Tool_Exception> exceptions, KJ_Tool_Origin origin){
         KJ_Tool_Result newResult = new KJ_Tool_Result();
 
@@ -91,7 +115,11 @@ public with sharing class KJ_Tool_Result {
     public void addException(KJ_Tool_Exception e){
         if(e != null){
             exceptions.add(e);
-            this.updateFlags();
+            switch on e.level {
+                when FATAL  { isSuccess = false;    hasFatals = true;   }
+                when HIGH   { isSuccess = false;    hasHighs = true;    }
+                when LOW    { isSuccess = true;     hasLows = true;     }
+            }
         }
     }
     public void setOrigin(KJ_Tool_Origin newOrigin){
