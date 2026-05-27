@@ -48,58 +48,13 @@ public with sharing class KJ_Tool_Result {
         return this;
     }
     public KJ_Tool_Result withException(KJ_Tool_Exception initException){
-        this.exceptions = new List<KJ_Tool_Exception>{ initException } ?? this.exceptions;
+        this.exceptions.add(initException);
         this.updateFlags();
         return this;
     }
     public KJ_Tool_Result withOrigin(KJ_Tool_Origin initOrigin){
         this.origin = initOrigin ?? this.origin;
         return this;
-    }
-    public static KJ_Tool_Result build(Boolean isSuccess, String message, List<KJ_Tool_Exception> exceptions, KJ_Tool_Origin origin){
-        KJ_Tool_Result newResult = new KJ_Tool_Result();
-
-        newResult.isSuccess     = isSuccess     ?? newResult.isSuccess;
-        newResult.message       = message       ?? newResult.message;
-        newResult.exceptions    = exceptions    ?? newResult.exceptions;
-        newResult.origin        = origin        ?? newResult.origin;
-
-        newResult.updateFlags();
-
-        return newResult;
-    }
-    public static KJ_Tool_Result build(Boolean isSuccess, String message, KJ_Tool_Exception e, KJ_Tool_Origin origin){
-        return build(isSuccess, message, new List<KJ_Tool_Exception>{e}, origin);
-    }
-    public static KJ_Tool_Result build(Boolean isSuccess, String message, List<KJ_Tool_Exception> exceptions){
-        return build(isSuccess, message, exceptions, null);
-    }
-    public static KJ_Tool_Result build(Boolean isSuccess, String message, KJ_Tool_Exception e){
-        return build(isSuccess, message, new List<KJ_Tool_Exception>{e}, null);
-    }
-    public static KJ_Tool_Result build(Boolean isSuccess, String message){
-        return build(isSuccess, message, null, null);
-    }
-    public static KJ_Tool_Result build(Boolean isSuccess, List<KJ_Tool_Exception> exceptions){
-        return build(isSuccess, null, exceptions, null);
-    }
-    public static KJ_Tool_Result build(String message, List<KJ_Tool_Exception> exceptions){
-        return build(null, message, exceptions, null);
-    }
-    public static KJ_Tool_Result build(Boolean isSuccess, KJ_Tool_Exception e){
-        return build(isSuccess, null, new List<KJ_Tool_Exception>{e}, null);
-    }
-    public static KJ_Tool_Result build(String message, KJ_Tool_Exception e){
-        return build(null, message, new List<KJ_Tool_Exception>{e}, null);
-    }
-    public static KJ_Tool_Result build(Boolean isSuccess){
-        return build(isSuccess, null, null, null);
-    }
-    public static KJ_Tool_Result build(List<KJ_Tool_Exception> exceptions){
-        return build(null, null, exceptions, null);
-    }
-    public static KJ_Tool_Result build(KJ_Tool_Exception e){
-        return build(null, null, new List<KJ_Tool_Exception>{e}, null);
     }
 
     // mutators
@@ -122,12 +77,26 @@ public with sharing class KJ_Tool_Result {
             }
         }
     }
+    public void addExceptions(List<KJ_Tool_Exception> newExceptions){
+        if(newExceptions == null) { return; }
+        
+        for(KJ_Tool_Exception e : newExceptions){
+            if(e != null){
+                this.exceptions.add(e);
+                switch on e.level {
+                    when FATAL  { isSuccess = false;    hasFatals = true;   }
+                    when HIGH   { isSuccess = false;    hasHighs = true;    }
+                    when LOW    { isSuccess = true;     hasLows = true;     }
+                }
+            }
+        }
+    }
     public void setOrigin(KJ_Tool_Origin newOrigin){
         this.origin = newOrigin ?? this.origin;
     }
 
-    public void updateFlags(){
-        for(e : exceptions){
+    private void updateFlags(){
+        for(KJ_Tool_Exception e : exceptions){
             switch on e.level {
                 when FATAL  { isSuccess = false;    hasFatals = true;   }
                 when HIGH   { isSuccess = false;    hasHighs = true;    }

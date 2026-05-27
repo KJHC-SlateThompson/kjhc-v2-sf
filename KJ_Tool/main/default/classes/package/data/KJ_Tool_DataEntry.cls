@@ -34,6 +34,6 @@ public with sharing class KJ_Tool_DataEntry {
     }
     public KJ_Tool_DataEntry withLabel(String initLabel){
         this.label = initLabel ?? this.label;
-        return this.
+        return this;
     }
 }

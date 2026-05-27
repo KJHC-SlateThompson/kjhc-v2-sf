@@ -6,6 +6,7 @@
 */
 public with sharing class KJ_Tool_Package {
     //*-- Member Variables ------------------------------------------------------------------------
+    public String                  label          { get; private set; }
     public KJ_Tool_DataBundle      dataBundle     { get; private set; }
 
     public KJ_Tool_Result          result         { get; private set; }
@@ -17,42 +18,46 @@ public with sharing class KJ_Tool_Package {
 
     //*-- Member Methods --------------------------------------------------------------------------
     public KJ_Tool_Package() {
+        this.label          = '';
         this.dataBundle     = new KJ_Tool_DataBundle();
+        this.origin         = new KJ_Tool_Origin();
 
         this.result         = new KJ_Tool_Result();
 
-        this.origin         = new KJ_Tool_Origin();
-        this.orgContext     = new KJ_Tool_OrgContext();
-        this.userContext    = new KJ_Tool_UserContext();
-        this.triggerContext = new KJ_Tool_TriggerContext();
+        this.orgContext     = null;
+        this.userContext    = null;
+        this.triggerContext = null;
     }
 
-    public static KJ_Tool_Package build(
-                                        KJ_Tool_DataBundle initDataBundle, 
-                                        KJ_Tool_Origin initOrigin, 
-                                        KJ_Tool_Result initResult, 
-                                        KJ_Tool_OrgContext initOrgContext, 
-                                        KJ_Tool_UserContext initUserContext, 
-                                        KJ_Tool_TriggerContext initTriggerContext
-    ) {
+    public static KJ_Tool_Package build(KJ_Tool_DataBundle initDataBundle){
         KJ_Tool_Package newPackage = new KJ_Tool_Package();
 
-        newPackage.dataBundle       = initDataBundle        ?? newPackage.dataBundle;
-        newPackage.origin           = initOrigin            ?? newPackage.origin;
-        newPackage.result           = initResult            ?? newPackage.result;
-        newPackage.orgContext       = initOrgContext        ?? newPackage.orgContext;
-        newPackage.userContext      = initUserContext       ?? newPackage.userContext;
-        newPackage.triggerContext   = initTriggerContext    ?? newPackage.triggerContext;
+        newPackage.dataBundle = initDataBundle ?? newPackage.dataBundle;
 
         return newPackage;
     }
-    public static KJ_Tool_Package build(KJ_Tool_DataBundle initDataBundle){
-        return build(initDataBundle, null, null, null, null, null);
+    public KJ_Tool_Package withLabel(String initLabel){
+        this.label = initLabel ?? this.label;
+        return this;
     }
-    public static KJ_Tool_Package build(KJ_Tool_DataBundle initDataBundle, KJ_Tool_Origin initOrigin){
-        return build(initDataBundle, initOrigin, null, null, null, null);
+    public KJ_Tool_Package withResult(KJ_Tool_Result initResult){
+        this.result = initResult ?? this.result;
+        return this;
     }
-    public static KJ_Tool_Package build(KJ_Tool_DataBundle initDataBundle, KJ_Tool_Origin initOrigin, KJ_Tool_Result initResult){
-        return build(initDataBundle, initOrigin, initResult, null, null, null);
+    public KJ_Tool_Package withOrigin(KJ_Tool_Origin initOrigin){
+        this.origin = initOrigin ?? this.origin;
+        return this;
+    }
+    public KJ_Tool_Package withOrgContext(KJ_Tool_OrgContext initOrgContext){
+        this.orgContext = initOrgContext ?? this.orgContext;
+        return this;
+    }
+    public KJ_Tool_Package withUserContext(KJ_Tool_UserContext initUserContext){
+        this.userContext = initUserContext ?? this.userContext;
+        return this;
+    }
+    public KJ_Tool_Package withTriggerContext(KJ_Tool_TriggerContext initTriggerContext){
+        this.triggerContext = initTriggerContext ?? this.triggerContext;
+        return this;
     }
 }

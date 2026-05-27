@@ -6,8 +6,8 @@
 */
 public with sharing class KJ_Tool_DataBundle {
     //*-- Member Variables ------------------------------------------------------------------------
-    public String                  label;   { get; private set; }
-    public List<KJ_Tool_DataEntry> entries; { get; private set; }
+    public String                  label   { get; private set; }
+    public List<KJ_Tool_DataEntry> entries { get; private set; }
 
     //*-- Member Methods --------------------------------------------------------------------------
     // Constructors & Factory methods
@@ -23,7 +23,7 @@ public with sharing class KJ_Tool_DataBundle {
         return newDataBundle;
     }
     public static KJ_Tool_DataBundle build(KJ_Tool_DataEntry initEntry){
-        return build(initLabel, new List<KJ_Tool_DataEntry>{ initEntry });
+        return build(new List<KJ_Tool_DataEntry>{ initEntry });
     }
     public KJ_Tool_DataBundle withLabel(String initLabel){
         this.label = initLabel ?? this.label;
