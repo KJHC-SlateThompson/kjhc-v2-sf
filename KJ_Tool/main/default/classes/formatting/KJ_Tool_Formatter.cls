@@ -61,7 +61,7 @@ public with sharing class KJ_Tool_Formatter {
         result += 'Is Success: ' + (targetResult.isSuccess ? 'TRUE' : 'FALSE') + '\n';
         result += 'Message: ' + targetResult.message + '\n\n';
         
-        result += 'Exception count: ' targetResult.exceptions.size() + '\n';
+        result += 'Exception count: ' + targetResult.exceptions.size() + '\n';
         result += 'Has Fatals: ' + (targetResult.hasFatals ? 'TRUE' : 'FALSE' ) + '\n';
         result += 'Has Highs: ' + (targetResult.hasHighs ? 'TRUE' : 'FALSE') + '\n'; 
         result += 'Has Lows: ' + (targetResult.hasLows ? 'TRUE' : 'FALSE') + '\n\n';
@@ -85,7 +85,7 @@ public with sharing class KJ_Tool_Formatter {
      public static String toString(KJ_Tool_Exception.Code targetCode){
         switch on targetCode{
             when TEST_EXCEPTION { return 'TEST_EXCEPTION'; }
-            when DEFUALT_CODE   { return 'DEFAULT_CODE'; }
+            when DEFAULT_CODE   { return 'DEFAULT_CODE'; }
             when else           { return 'UNSPECIFIED'; }
         }
     }
@@ -103,6 +103,7 @@ public with sharing class KJ_Tool_Formatter {
         KJ_Tool_LogEntry result = new KJ_Tool_LogEntry(
             KJ_Tool_LogEntry.mapToLogEntryLevel(e.level),
             e.origin,
+            System.now();
             toString(e)
         );
         return result;

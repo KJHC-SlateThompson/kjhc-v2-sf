@@ -8,7 +8,7 @@ public with sharing class KJ_Tool_Logger {
     //*-- Member Methods --------------------------------------------------------------------------
     // Level based logging methods
     public static void debug(String message, KJ_Tool_Origin origin){
-        KJ_Tool_LogEntry logEntry = KJ_Tool_LogEntry.debug(message, origin)
+        KJ_Tool_LogEntry logEntry = KJ_Tool_LogEntry.debug(message, origin);
         log(logEntry);
     }
     public static void debug(String message){
@@ -26,7 +26,7 @@ public with sharing class KJ_Tool_Logger {
 
 
     public static void warn(String message, KJ_Tool_Origin origin){
-        KJ_Tool_LogEntry logEntry = new KJ_Tool_LogEntry.WARN(message, origin);
+        KJ_Tool_LogEntry logEntry = KJ_Tool_LogEntry.warn(message, origin);
         log(logEntry);
     }
     public static void warn(String message){
@@ -38,7 +38,7 @@ public with sharing class KJ_Tool_Logger {
 
     
     public static void error(String message, KJ_Tool_Origin origin){
-        KJ_Tool_LogEntry logEntry = new KJ_Tool_LogEntry.ERROR(message, origin);
+        KJ_Tool_LogEntry logEntry = KJ_Tool_LogEntry.error(message, origin);
         log(logEntry);
     }
     public static void error(String message){

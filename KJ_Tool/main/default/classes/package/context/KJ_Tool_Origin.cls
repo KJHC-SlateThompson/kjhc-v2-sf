@@ -48,7 +48,7 @@ public with sharing class KJ_Tool_Origin {
     public static KJ_Tool_Origin fromApex(String fileName, String className, String methodName){
         KJ_Tool_Origin newOrigin = KJ_Tool_Origin.build(
             SourceType.APEX,
-            filename,
+            fileName,
             className,
             methodName,
             null,

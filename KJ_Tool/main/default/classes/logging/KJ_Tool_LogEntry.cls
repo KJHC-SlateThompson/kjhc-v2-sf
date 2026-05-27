@@ -57,10 +57,10 @@ public with sharing class KJ_Tool_LogEntry {
     public static KJ_Tool_LogEntry build(Level initLevel, KJ_Tool_Origin initOrigin, Datetime initTimestamp, String initMessage){
         KJ_Tool_LogEntry newLogEntry = new KJ_Tool_LogEntry();
 
-        newLogEntry.level       = initLevel     ?? newLogEntry.level;
-        newLogEntry.origin      = initOrigin    ?? newLogEntry.origin;
-        newLogEntry.timestamp   = initOrigin    ?? newLogEntry.timestamp; 
-        newLogEntry.message     = initMessage   ?? newLogEntry.message;
+        newLogEntry.level       = initLevel         ?? newLogEntry.level;
+        newLogEntry.origin      = initOrigin        ?? newLogEntry.origin;
+        newLogEntry.timestamp   = initTimesstamp    ?? newLogEntry.timestamp; 
+        newLogEntry.message     = initMessage       ?? newLogEntry.message;
 
         return newLogEntry;
     }
