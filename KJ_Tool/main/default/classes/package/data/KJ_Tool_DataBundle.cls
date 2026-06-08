@@ -19,7 +19,7 @@ public with sharing class KJ_Tool_DataBundle {
     public static KJ_Tool_DataBundle build(List<KJ_Tool_DataEntry> initEntries){
         KJ_Tool_DataBundle newDataBundle = new KJ_Tool_DataBundle();
         newDataBundle.entries = initEntries ?? newDataBundle.entries;
-
+        
         return newDataBundle;
     }
     public static KJ_Tool_DataBundle build(KJ_Tool_DataEntry initEntry){
