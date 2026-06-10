@@ -1,5 +1,12 @@
+/* 
+*   File: KJ_Tool_AbstractController.cls
+*   Authors: Slate Thompson (Slate@kintyjones.com)
+*   Created: 6/3/2026
+*   Description: This class is built to template per-object controllers
+
+*/
 public abstract class KJ_Dispatch_AbstractController {
-    
+    //*-- Member Methods --------------------------------------------------------------------------
     // Method called by trigger
     public void run(){
         KJ_Tool_Package pkg = this.buildPackage();
@@ -13,7 +20,7 @@ public abstract class KJ_Dispatch_AbstractController {
     }
 
     protected abstract String controllerName();
-    protected abstract void route(KJ_Tool_Package pkg);
+
     protected virtual KJ_Tool_Package buildPackage() {
         return KJ_Tool_Package.build(null)
                                 .withOrigin(KJ_ToolOrigin.fromApex(
@@ -24,12 +31,17 @@ public abstract class KJ_Dispatch_AbstractController {
                                 .withOrgContext(KJ_Tool_OrgContext.build())
                                 .withUserContext(KJ_Tool_UserContext.build())
                                 .withTriggerContext(KJ_Tool_TriggerContext.build());
-
     }
+
+    protected abstract void route(KJ_Tool_Package pkg);
+
     protected virtual void finalize(KJ_Tool_Package pkg){
+        if(pkg.result.isSuccess) { return; }
+
         for(KJ_Tool_Exception e : pkg.result.exceptions){
-            switch(e.level){
-                
+            switch on e.level{
+                when FATAL  { KJ_Tool_Logger.fatal(e); }
+                when else   { KJ_Tool_Logger.high(e); }
             }
         }
     }

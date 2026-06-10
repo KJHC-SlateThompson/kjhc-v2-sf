@@ -46,14 +46,14 @@ public with sharing class KJ_Tool_LogEntry {
     public String           message     { get; private set; }
 
     //*-- Member Functions ------------------------------------------------------------------------
-    // Constructors
+    // Constructors & factory methods
     public KJ_Tool_LogEntry() {
         this.level      = Level.DEBUG;
         this.origin     = new KJ_Tool_Origin();
         this.timestamp  = System.now();
         this.message    = '';
     }
-    // Factory methods
+    
     public static KJ_Tool_LogEntry build(Level initLevel, KJ_Tool_Origin initOrigin, Datetime initTimestamp, String initMessage){
         KJ_Tool_LogEntry newLogEntry = new KJ_Tool_LogEntry();
 

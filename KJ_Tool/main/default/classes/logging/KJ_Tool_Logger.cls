@@ -56,7 +56,4 @@ public with sharing class KJ_Tool_Logger {
 
         System.debug(logEntryLevel, logEntryOutputString);
     }
-    public static void log(KJ_Tool_Exception e){
-        KJ_Tool_LogEntry.Level level = KJ_Tool_LogEntry.mapToLoggingLevel(e.level);
-    }
 }
