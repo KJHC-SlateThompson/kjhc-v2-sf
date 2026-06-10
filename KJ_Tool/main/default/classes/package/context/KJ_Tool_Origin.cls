@@ -66,6 +66,6 @@ public with sharing class KJ_Tool_Origin {
             objectName,
             recordId
         );
-        return newOrigin; 
+        return newOrigin;
     }
 }

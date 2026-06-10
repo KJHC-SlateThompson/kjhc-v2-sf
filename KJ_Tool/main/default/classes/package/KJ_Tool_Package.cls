@@ -28,10 +28,10 @@ public with sharing class KJ_Tool_Package {
         this.userContext    = null;
         this.triggerContext = null;
     }
-
+ 
+ 
     public static KJ_Tool_Package build(KJ_Tool_DataBundle initDataBundle){
         KJ_Tool_Package newPackage = new KJ_Tool_Package();
-
         newPackage.dataBundle = initDataBundle ?? newPackage.dataBundle;
 
         return newPackage;

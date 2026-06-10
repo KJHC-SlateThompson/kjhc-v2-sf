@@ -52,7 +52,7 @@ public with sharing class KJ_Tool_UserContext {
         newContext.profileName     = runningUser.Profile.Name   ?? newContext.profileName;
  
         newContext.roleId          = runningUser.UserRoleId     ?? newContext.roleId;
-        newContext.roleName        = runningUser.UserRoleId != null ? runningUser.UserRole.Name : '';
+        newContext.roleName        = (runningUser.UserRoleId != null) ? runningUser.UserRole.Name : '';
 
         return newContext;
     }
