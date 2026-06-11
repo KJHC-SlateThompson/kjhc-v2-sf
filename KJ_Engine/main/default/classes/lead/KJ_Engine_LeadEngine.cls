@@ -10,7 +10,7 @@ public with sharing class KJ_Engine_LeadEngine {
         List<Lead> newLeads = (List<Lead>) pkg.triggerContext.newList;
 
         for (Lead lead : newLeads){
-
+            KJ_Tool_Logger.debug('LeadEngine.onBeforeInsert fired for: ' + lead.LastName);
         }
     }
 
@@ -19,7 +19,7 @@ public with sharing class KJ_Engine_LeadEngine {
         Map<Id, Lead> oldLeads = (Map<Id, Lead>) pkg.triggerContext.oldMap;
 
         for (Lead lead : newLeads){
-            
+            KJ_Tool_Logger.debug('LeadEngine.onBeforeUpdate fired for: ' + lead.LastName);
         }
     }
 }

@@ -48,7 +48,7 @@ public with sharing class KJ_Tool_LogEntry {
     //*-- Member Functions ------------------------------------------------------------------------
     // Constructors & factory methods
     public KJ_Tool_LogEntry() {
-        this.level      = Level.DEBUG; 
+        this.level      = KJ_Tool_LogEntry.Level.DEBUG; 
         this.origin     = new KJ_Tool_Origin();
         this.timestamp  = System.now();
         this.message    = '';

@@ -19,7 +19,7 @@ public with sharing class KJ_Tool_DataEntry {
     // Constructors & Factory Methods
     public KJ_Tool_DataEntry(){
         this.label      = '';
-        this.dataType   = DataType.UNKNOWN;
+        this.dataType   = KJ_Tool_DataEntry.DataType.UNKNOWN;
         this.value      = null;
     }
 

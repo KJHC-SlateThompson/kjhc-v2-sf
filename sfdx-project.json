@@ -2,7 +2,7 @@
   "packageDirectories": [
 
     {
-      "path": "KJ_Exec",
+      "path": "KJ_Execute",
       "default": true
     },
 
@@ -15,7 +15,7 @@
     },
 
     {
-      "path": "KJ_Integration"
+      "path": "KJ_Integrate"
     },
 
     {

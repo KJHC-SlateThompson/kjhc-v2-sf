@@ -26,7 +26,7 @@ public with sharing class KJ_Tool_OrgContext {
         this.orgId          = null;
         this.orgName        = '';
         this.instanceUrl    = '';
-        this.orgType        = OrgType.SANDBOX;
+        this.orgType        = KJ_Tool_OrgContext.OrgType.SANDBOX;
 
     }
     public static KJ_Tool_OrgContext build(){

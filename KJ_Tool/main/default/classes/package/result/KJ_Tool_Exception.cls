@@ -26,22 +26,15 @@ public with sharing class KJ_Tool_Exception extends Exception{
     public KJ_Tool_Origin   origin          { get; private set; }
 
     //*-- Member Methods --------------------------------------------------------------------------
-    // Constructor & factory methods
-    public KJ_Tool_Exception(){
-        this.nativeException    = null;
-        this.code               = Code.DEFAULT_CODE;
-        this.level              = Level.LOW;
-        this.message            = '';
-        this.origin             = new KJ_Tool_Origin();
-    }
+    // Factory methods
     public static KJ_Tool_Exception build(Exception newNativeException, Code newCode, Level newLevel, String newMessage, KJ_Tool_Origin newOrigin){
         KJ_Tool_Exception newException = new KJ_Tool_Exception();
 
-        newException.nativeException    = newNativeException    ?? newException.nativeException;
-        newException.code               = newCode               ?? newException.code;
-        newException.level              = newLevel              ?? newException.level;
-        newException.message            = newMessage            ?? newException.message;
-        newException.origin             = newOrigin             ?? newException.origin;
+        newException.nativeException    = newNativeException    ?? null;
+        newException.code               = newCode               ?? Code.DEFAULT_CODE;
+        newException.level              = newLevel              ?? Level.LOW;
+        newException.message            = newMessage            ?? '';
+        newException.origin             = newOrigin             ?? new KJ_Tool_Origin();
 
         return newException;
     }

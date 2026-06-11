@@ -11,10 +11,18 @@ public with sharing class KJ_Dispatch_LeadController extends KJ_Dispatch_Abstrac
     public KJ_Dispatch_LeadController() {
         
     }
-    protected String controllerName(){
+    protected override String controllerName(){
         return 'KJ_Dispatch_LeadController';
     }
-    protected void route(KJ_Tool_Package pkg){
-        
+    protected override void route(KJ_Tool_Package pkg){
+        KJ_Tool_TriggerContext ctx = pkg.triggerContext;
+
+        if (ctx.isBefore){
+            if (ctx.isInsert) { KJ_Engine_LeadEngine.onBeforeInsert(pkg); }
+            if (ctx.isUpdate) { KJ_Engine_LeadEngine.onBeforeUpdate(pkg); }
+        }
+        else if (ctx.isAfter){
+            // after methods go here as needed
+        }
     }
 }
