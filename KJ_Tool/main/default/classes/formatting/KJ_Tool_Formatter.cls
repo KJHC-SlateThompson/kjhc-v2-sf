@@ -79,6 +79,10 @@ public with sharing class KJ_Tool_Formatter {
         result += 'Level: ' + toString(e.level) + '\n';
         result += 'Origin: (' + toString(e.origin) + ')\n';
         result += 'Message: \n' + e.message + '\n';
+        if (e.nativeException != null) {
+            result += 'Caused by: ' + e.nativeException.getTypeName() + '\n';
+            result += 'Stack Trace: \n' + e.nativeException.getStackTraceString() + '\n';
+        }
         
         return result;
     }
@@ -86,6 +90,7 @@ public with sharing class KJ_Tool_Formatter {
         switch on targetCode{
             when TEST_EXCEPTION { return 'TEST_EXCEPTION'; }
             when DEFAULT_CODE   { return 'DEFAULT_CODE'; }
+            when ROUTING_ERROR  { return 'ROUTING_ERROR'; }
             when else           { return 'UNSPECIFIED'; }
         }
     }
@@ -100,12 +105,11 @@ public with sharing class KJ_Tool_Formatter {
 
     //* toLogEntry()
     public static KJ_Tool_LogEntry toLogEntry(KJ_Tool_Exception e){
-        KJ_Tool_LogEntry result = new KJ_Tool_LogEntry(
+        return KJ_Tool_LogEntry.build(
             KJ_Tool_LogEntry.mapToLogEntryLevel(e.level),
             e.origin,
-            System.now();
+            System.now(),
             toString(e)
         );
-        return result;
     }
 }

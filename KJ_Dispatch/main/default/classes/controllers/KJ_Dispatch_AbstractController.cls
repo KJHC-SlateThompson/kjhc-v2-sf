@@ -14,7 +14,10 @@ public abstract class KJ_Dispatch_AbstractController {
             this.route(pkg);
         }
         catch (Exception e) {
-            // wrap in KJ_Tool_exception and add to package.result.exceptions
+            // wrap in KJ_Tool_Exception and add to package.result.exceptions
+            pkg.result.addException(
+                KJ_Tool_Exception.fatal(e, KJ_Tool_Exception.Code.ROUTING_ERROR)
+            );
         }
         this.finalize(pkg);
     }

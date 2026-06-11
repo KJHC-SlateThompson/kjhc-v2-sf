@@ -59,7 +59,7 @@ public with sharing class KJ_Tool_LogEntry {
 
         newLogEntry.level       = initLevel         ?? newLogEntry.level;
         newLogEntry.origin      = initOrigin        ?? newLogEntry.origin;
-        newLogEntry.timestamp   = initTimesstamp    ?? newLogEntry.timestamp;
+        newLogEntry.timestamp   = initTimestamp     ?? newLogEntry.timestamp;
         newLogEntry.message     = initMessage       ?? newLogEntry.message;
 
         return newLogEntry;
