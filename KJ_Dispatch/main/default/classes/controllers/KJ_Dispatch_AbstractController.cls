@@ -23,7 +23,7 @@ public abstract class KJ_Dispatch_AbstractController {
 
     protected virtual KJ_Tool_Package buildPackage() {
         return KJ_Tool_Package.build(null)
-                                .withOrigin(KJ_ToolOrigin.fromApex(
+                                .withOrigin(KJ_Tool_Origin.fromApex(
                                     this.controllerName() + '.cls',
                                     this.controllerName(),
                                     'buildPackage()'
@@ -40,8 +40,8 @@ public abstract class KJ_Dispatch_AbstractController {
 
         for(KJ_Tool_Exception e : pkg.result.exceptions){
             switch on e.level{
-                when FATAL  { KJ_Tool_Logger.fatal(e); }
-                when else   { KJ_Tool_Logger.high(e); }
+                when FATAL  { KJ_Tool_Logger.error(e); }
+                when else   { KJ_Tool_Logger.warn(e); }
             }
         }
     }

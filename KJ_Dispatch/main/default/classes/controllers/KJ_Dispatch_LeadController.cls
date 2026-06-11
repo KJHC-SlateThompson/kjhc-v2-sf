@@ -12,7 +12,7 @@ public with sharing class KJ_Dispatch_LeadController extends KJ_Dispatch_Abstrac
         
     }
     protected String controllerName(){
-        return 'KJ_Dispatch_LeadDispatch';
+        return 'KJ_Dispatch_LeadController';
     }
     protected void route(KJ_Tool_Package pkg){
         
