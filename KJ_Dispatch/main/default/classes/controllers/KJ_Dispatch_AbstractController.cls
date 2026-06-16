@@ -9,8 +9,9 @@ public abstract class KJ_Dispatch_AbstractController {
     //*-- Member Methods --------------------------------------------------------------------------
     // Method called by trigger
     public void run(){
+        KJ_Tool_Package pkg;
         try{ 
-            KJ_Tool_Package pkg = this.buildPackage();
+            pkg = this.buildPackage();
             this.route(pkg);
         }
         catch (Exception e) {
