@@ -15,7 +15,7 @@ public with sharing class KJ_Tool_Result {
     public Boolean                  hasHighs    { get; private set; }
     public Boolean                  hasLows     { get; private set; }
 
-    public KJ_Tool_Origin           origin      { get; private Set; }
+    public KJ_Tool_Origin           origin      { get; private set; }
 
     //*-- Member Methods --------------------------------------------------------------------------
     // constructor
@@ -67,44 +67,37 @@ public with sharing class KJ_Tool_Result {
     public void setMessage(String newMessage){
         this.message = newMessage ?? this.message;
     }
+    public void setOrigin(KJ_Tool_Origin newOrigin){
+        this.origin = newOrigin ?? this.origin;
+    }
     public void addException(KJ_Tool_Exception e){
-        if(e != null){
-            exceptions.add(e);
-            switch on e.level {
-                when FATAL  { isSuccess = false;    hasFatals = true;   }
-                when HIGH   { isSuccess = false;    hasHighs = true;    }
-                when LOW    { isSuccess = true;     hasLows = true;     }
-            }
-        }
+        if(e == null) { return; }
+
+        exceptions.add(e);
+        this.applyLevelFlag(e.level);
+        
     }
     public void addExceptions(List<KJ_Tool_Exception> newExceptions){
         if(newExceptions == null) { return; }
         
         for(KJ_Tool_Exception e : newExceptions){
-            if(e != null){
-                this.exceptions.add(e);
-                switch on e.level {
-                    when FATAL  { isSuccess = false;    hasFatals = true;   }
-                    when HIGH   { isSuccess = false;    hasHighs = true;    }
-                    when LOW    { isSuccess = true;     hasLows = true;     }
-                }
-            }
+            this.addException(e);
         }
-    }
-    public void setOrigin(KJ_Tool_Origin newOrigin){
-        this.origin = newOrigin ?? this.origin;
     }
 
+    private void applyLevelFlag(KJ_Tool_Exception.Level level){
+        switch on level {
+            when FATAL { this.isSuccess = false; this.hasFatals = true; }
+            when HIGH  { this.isSuccess = false; this.hasHighs = true; }
+            when LOW   { this.hasLows = true; } // LOW records, never resurrects success
+        }
+    }
     private void updateFlags(){
         for(KJ_Tool_Exception e : exceptions){
-            switch on e.level {
-                when FATAL  { isSuccess = false;    hasFatals = true;   }
-                when HIGH   { isSuccess = false;    hasHighs = true;    }
-                when LOW    { isSuccess = true;     hasLows = true;     }
-            }
+            this.applyLevelFlag(e.level);
         }
-        if (hasFatals || hasHighs){
-            isSuccess = false;
+        if (this.hasFatals || this.hasHighs){
+            this.isSuccess = false;
         }
     }
 }

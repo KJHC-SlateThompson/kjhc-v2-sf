@@ -9,6 +9,7 @@ public with sharing class KJ_Tool_Exception extends Exception{
     //*-- Constants -------------------------------------------------------------------------------
     public enum Code {
         ROUTING_ERROR, // Used if controller fails to route package. Typically appended to pkg.result.exceptions.
+        INVALID_CONTEXT, // Used if a controller is invoked without the context its routing requires.
         DEFAULT_CODE, 
         TEST_EXCEPTION
     }
@@ -33,7 +34,7 @@ public with sharing class KJ_Tool_Exception extends Exception{
         newException.nativeException    = newNativeException    ?? null;
         newException.code               = newCode               ?? Code.DEFAULT_CODE;
         newException.level              = newLevel              ?? Level.LOW;
-        newException.message            = newMessage            ?? '';
+        newException.message            = newMessage            ?? newNativeException?.getMessage() ?? '';
         newException.origin             = newOrigin             ?? new KJ_Tool_Origin();
 
         return newException;
@@ -53,7 +54,6 @@ public with sharing class KJ_Tool_Exception extends Exception{
         return build(nativeException, code, Level.LOW, null, null);
     }
 
-
     public static KJ_Tool_Exception high(Code code, String message, KJ_Tool_Origin origin){
         return build(code, Level.HIGH, message, origin);
     }
@@ -64,9 +64,8 @@ public with sharing class KJ_Tool_Exception extends Exception{
         return build(nativeException, code, Level.HIGH, null, null);
     }
 
-
     public static KJ_Tool_Exception fatal(Code code, String message, KJ_Tool_Origin origin){
-        return build(code, level.FATAL, message, origin);
+        return build(code, Level.FATAL, message, origin);
     }
     public static KJ_Tool_Exception fatal(Code code, String message){
         return fatal(code, message, null);

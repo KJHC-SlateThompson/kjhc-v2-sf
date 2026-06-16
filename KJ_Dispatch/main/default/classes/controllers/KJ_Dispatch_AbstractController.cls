@@ -3,14 +3,14 @@
 *   Authors: Slate Thompson (Slate@kintyjones.com)
 *   Created: 6/3/2026
 *   Description: This class is built to template per-object controllers
-
 */
+
 public abstract class KJ_Dispatch_AbstractController {
     //*-- Member Methods --------------------------------------------------------------------------
     // Method called by trigger
     public void run(){
-        KJ_Tool_Package pkg = this.buildPackage();
         try{ 
+            KJ_Tool_Package pkg = this.buildPackage();
             this.route(pkg);
         }
         catch (Exception e) {
