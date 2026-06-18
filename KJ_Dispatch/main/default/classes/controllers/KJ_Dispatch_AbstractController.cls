@@ -8,19 +8,19 @@
 public abstract class KJ_Dispatch_AbstractController {
     //*-- Member Methods --------------------------------------------------------------------------
     // Method called by trigger
-    public void run(){
-        KJ_Tool_Package pkg;
+    public KJ_Tool_Package run(){
+        KJ_Tool_Package pkg = KJ_Tool_Package.build();
         try{ 
             pkg = this.buildPackage();
             this.route(pkg);
         }
         catch (Exception e) {
-            // wrap in KJ_Tool_Exception and add to package.result.exceptions
             pkg.result.addException(
                 KJ_Tool_Exception.fatal(e, KJ_Tool_Exception.Code.ROUTING_ERROR)
             );
         }
         this.finalize(pkg);
+        return pkg;
     }
 
     protected abstract String controllerName();
@@ -34,7 +34,7 @@ public abstract class KJ_Dispatch_AbstractController {
                                 ))
                                 .withOrgContext(KJ_Tool_OrgContext.build())
                                 .withUserContext(KJ_Tool_UserContext.build())
-                                .withTriggerContext(KJ_Tool_TriggerContext.build());
+                                .withTriggerContext(KJ_Tool_TriggerContext.build())
     }
 
     protected abstract void route(KJ_Tool_Package pkg);

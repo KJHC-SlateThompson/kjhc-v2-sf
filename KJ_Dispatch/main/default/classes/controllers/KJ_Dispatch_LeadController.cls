@@ -15,6 +15,13 @@ public with sharing class KJ_Dispatch_LeadController extends KJ_Dispatch_Abstrac
         return 'KJ_Dispatch_LeadController';
     }
     protected override void route(KJ_Tool_Package pkg){
+        if(pkg.triggerContext == null) {
+            pkg.result.addException(KJ_Tool_Exception.fatal(
+                                                        KJ_Tool_Exception.Code.INVALID_CONTEXT,
+                                                        'Lead controller invoked without a trigger context.'
+            ));
+            return;
+        }
         KJ_Tool_TriggerContext ctx = pkg.triggerContext;
 
         if (ctx.isBefore){
