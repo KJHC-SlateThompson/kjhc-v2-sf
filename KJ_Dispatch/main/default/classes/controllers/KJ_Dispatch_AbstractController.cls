@@ -34,7 +34,7 @@ public abstract class KJ_Dispatch_AbstractController {
                                 ))
                                 .withOrgContext(KJ_Tool_OrgContext.build())
                                 .withUserContext(KJ_Tool_UserContext.build())
-                                .withTriggerContext(KJ_Tool_TriggerContext.build())
+                                .withTriggerContext(KJ_Tool_TriggerContext.build());
     }
 
     protected abstract void route(KJ_Tool_Package pkg);
