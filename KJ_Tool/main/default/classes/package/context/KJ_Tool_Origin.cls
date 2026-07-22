@@ -26,7 +26,7 @@ public with sharing class KJ_Tool_Origin {
     //*-- Member Methods --------------------------------------------------------------------------
     // Constructor and build methods
     public KJ_Tool_Origin(){
-        this.sourceType = SourceType.UNSPECIFIED;
+        this.sourceType = KJ_Tool_Origin.SourceType.UNSPECIFIED;
         this.filename   = '';
         this.className  = '';
         this.methodName = '';

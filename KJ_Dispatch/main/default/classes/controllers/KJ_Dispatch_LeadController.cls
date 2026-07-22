@@ -11,10 +11,25 @@ public with sharing class KJ_Dispatch_LeadController extends KJ_Dispatch_Abstrac
     public KJ_Dispatch_LeadController() {
         
     }
-    protected String controllerName(){
-        return 'KJ_Dispatch_LeadDispatch';
+    protected override String controllerName(){
+        return 'KJ_Dispatch_LeadController';
     }
-    protected void route(KJ_Tool_Package pkg){
-        
+    protected override void route(KJ_Tool_Package pkg){
+        if(pkg.triggerContext == null) {
+            pkg.result.addException(KJ_Tool_Exception.fatal(
+                                                        KJ_Tool_Exception.Code.INVALID_CONTEXT,
+                                                        'Lead controller invoked without a trigger context.'
+            ));
+            return;
+        }
+        KJ_Tool_TriggerContext ctx = pkg.triggerContext;
+
+        if (ctx.isBefore){
+            if (ctx.isInsert) { KJ_Engine_LeadEngine.onBeforeInsert(pkg); }
+            if (ctx.isUpdate) { KJ_Engine_LeadEngine.onBeforeUpdate(pkg); }
+        }
+        else if (ctx.isAfter){
+            // after methods go here as needed
+        }
     }
 }

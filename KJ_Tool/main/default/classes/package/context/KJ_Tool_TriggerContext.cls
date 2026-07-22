@@ -38,6 +38,7 @@ public with sharing class KJ_Tool_TriggerContext {
     }
 
     public static KJ_Tool_TriggerContext build(){
+        if (!Trigger.isExecuting) { return null; }
         KJ_Tool_TriggerContext newContext = new KJ_Tool_TriggerContext();
 
         newContext.isBefore     = Trigger.isBefore      ?? newContext.isBefore;

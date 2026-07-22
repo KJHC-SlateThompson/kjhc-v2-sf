@@ -37,8 +37,7 @@ public with sharing class KJ_Tool_UserContext {
         User runningUser = [
             SELECT Id, Name, Email,
                    ProfileId, Profile.Name,
-                   UserRoleId, UserRole.Name,
-                   UserType, LanguageLocaleKey
+                   UserRoleId, UserRole.Name
             FROM User
             WHERE Id = :UserInfo.getUserId()
             LIMIT 1

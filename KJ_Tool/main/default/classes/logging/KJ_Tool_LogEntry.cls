@@ -48,7 +48,7 @@ public with sharing class KJ_Tool_LogEntry {
     //*-- Member Functions ------------------------------------------------------------------------
     // Constructors & factory methods
     public KJ_Tool_LogEntry() {
-        this.level      = Level.DEBUG;
+        this.level      = KJ_Tool_LogEntry.Level.DEBUG; 
         this.origin     = new KJ_Tool_Origin();
         this.timestamp  = System.now();
         this.message    = '';
@@ -59,12 +59,12 @@ public with sharing class KJ_Tool_LogEntry {
 
         newLogEntry.level       = initLevel         ?? newLogEntry.level;
         newLogEntry.origin      = initOrigin        ?? newLogEntry.origin;
-        newLogEntry.timestamp   = initTimesstamp    ?? newLogEntry.timestamp; 
+        newLogEntry.timestamp   = initTimestamp     ?? newLogEntry.timestamp;
         newLogEntry.message     = initMessage       ?? newLogEntry.message;
 
         return newLogEntry;
     }
-    
+
 
     public static KJ_Tool_LogEntry debug(String initMessage, KJ_Tool_Origin initOrigin){
         return build(Level.DEBUG, initOrigin, null, initMessage);

@@ -1,4 +1,4 @@
-/* 
+/*
 *   File: KJ_Tool_Package.cls
 *   Authors: Slate Thompson (Slate@kintyjones.com)
 *   Created: 5/22/2026
@@ -36,6 +36,10 @@ public with sharing class KJ_Tool_Package {
 
         return newPackage;
     }
+    public static KJ_Tool_Package build(){
+        return build(null);
+    }
+
     public KJ_Tool_Package withLabel(String initLabel){
         this.label = initLabel ?? this.label;
         return this;

@@ -38,10 +38,10 @@ public with sharing class KJ_Tool_DataBundle {
 
     // Read only methods
     public KJ_Tool_DataEntry getFirst(){
-        return this.entries.getFirst();
+        return this.entries.isEmpty() ? null : this.entries[0];
     }
     public KJ_Tool_DataEntry getLast(){
-        return this.entries.getLast();
+        return this.entries.isEmpty() ? null : this.entries[this.entries.size() - 1];
     }
     public KJ_Tool_DataEntry getByLabel(string targetLabel){
         for(KJ_Tool_DataEntry entry : this.entries){
