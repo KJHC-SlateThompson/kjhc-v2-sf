@@ -42,7 +42,7 @@ public with sharing class KJ_Dispatch_AbstractController_Test {
 
     @isTest
     static void run_HappyPath(){
-        KJ_Tool Package pkg = new FakeController().run();
+        KJ_Tool_Package pkg = new FakeController().run();
 
         Assert.isTrue(pkg.result.isSuccess);
     }
