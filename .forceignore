@@ -10,3 +10,13 @@ package.xml
 
 # LWC Jest
 **/__tests__/**
+
+# Directory placeholders — keep empty domain scaffolding tracked in git
+# without letting the SFDX metadata resolver see it.
+**/.gitkeep
+
+# Markdown / docs folders are documentation, never deployable metadata.
+# This also stops a stray .md dropped into a metadata folder from
+# breaking a deploy.
+**/docs/**
+**/*.md
