@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Filter_Count_and_Sizes__c</fullName>
+    <inlineHelpText>(Number of Filters) Length x Width,
+(Number of Filters) Length x Width,
+(Number of Filters) Length x Width,
+(Number of Filters) Length x Width</inlineHelpText>
+    <label>Filter Count and Sizes</label>
+    <length>10000</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

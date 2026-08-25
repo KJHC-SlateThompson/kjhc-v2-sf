@@ -2,8 +2,7 @@
   "packageDirectories": [
 
     {
-      "path": "KJ_Execute",
-      "default": true
+      "path": "KJ_Execute"
     },
 
     {
@@ -19,7 +18,8 @@
     },
 
     {
-      "path": "KJ_Model"
+      "path": "KJ_Model",
+      "default": true
     },
 
     {
