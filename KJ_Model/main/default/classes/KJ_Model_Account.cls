@@ -9,13 +9,7 @@ public with sharing class KJ_Model_Account {
 
     //*-- 1. Constants -----------------------------------------------------------------------------
 
-    //*--    1.1 Picklist Proxy Enums --------------------------------------------------------------
-    public enum Status              { UNKNOWN, LEAD, CURRENT_CUSTOMER, LOST }
-    public enum Sector              { UNKNOWN, RESIDENTIAL, COMMERCIAL }
-    public enum ServiceTerritory    { UNKNOWN, NWA, TULSA }
-    public enum RecordOrigin        { UNKNOWN, FIELDPULSE, QBO, SALESFORCE, SALESFORCE_V1 }
-
-    //*--    1.2 Field Groupings -------------------------------------------------------------------
+    //*--    1.1 Field Groupings -------------------------------------------------------------------
     public static final List<SObjectField> VITAL_DATA = new List<SObjectField>{
         Account.Id,
         Account.Name,
@@ -70,17 +64,17 @@ public with sharing class KJ_Model_Account {
         Account.QBO_Customer_Id__c
     };
 
-    //*--    1.3 Type Defaults ---------------------------------------------------------------------
-    private static final String             DEFAULT_TEXT      = null;
-    private static final Decimal            DEFAULT_NUMBER    = null;
-    private static final Date               DEFAULT_DATE      = null;
-    private static final Datetime           DEFAULT_DATETIME  = null;
-    private static final Status             DEFAULT_STATUS    = Status.UNKNOWN;
-    private static final Sector             DEFAULT_SECTOR    = Sector.UNKNOWN;
-    private static final ServiceTerritory   DEFAULT_TERRITORY = ServiceTerritory.UNKNOWN;
-    private static final RecordOrigin       DEFAULT_ORIGIN    = RecordOrigin.UNKNOWN;
+    //*--    1.2 Type Defaults ---------------------------------------------------------------------
+    private static final String                          DEFAULT_TEXT      = null;
+    private static final Decimal                         DEFAULT_NUMBER    = null;
+    private static final Date                            DEFAULT_DATE      = null;
+    private static final Datetime                        DEFAULT_DATETIME  = null;
+    private static final KJ_Model_Picklist.AccountStatus DEFAULT_STATUS    = KJ_Model_Picklist.AccountStatus.UNKNOWN;
+    private static final KJ_Model_Picklist.Sector        DEFAULT_SECTOR    = KJ_Model_Picklist.Sector.UNKNOWN;
+    private static final KJ_Model_Picklist.Territory     DEFAULT_TERRITORY = KJ_Model_Picklist.Territory.UNKNOWN;
+    private static final KJ_Model_Picklist.RecordOrigin  DEFAULT_ORIGIN    = KJ_Model_Picklist.RecordOrigin.UNKNOWN;
 
-    //*--    1.4 Object Reference ------------------------------------------------------------------
+    //*--    1.3 Object Reference ------------------------------------------------------------------
     // Statically records the SObject type of the object modeled by the class
     public static final SObjectType SOBJECT_TYPE = Account.SObjectType;
 
@@ -88,135 +82,62 @@ public with sharing class KJ_Model_Account {
     //*-- 2. Member Variables ----------------------------------------------------------------------
 
     // Vital
-    public Id                   recordId            { get; private set; }
-    public Id                   parentId            { get; private set; }
-    public Id                   recordTypeId        { get; private set; }
-    public String               name                { get; private set; }
-    public Status               status              { get; private set; }
-    public Sector               sector              { get; private set; }
-    public ServiceTerritory     serviceTerritory    { get; private set; }
+    public Id                              recordId            { get; private set; }
+    public Id                              parentId            { get; private set; }
+    public Id                              recordTypeId        { get; private set; }
+    public String                          name                { get; private set; }
+    public KJ_Model_Picklist.AccountStatus status              { get; private set; }
+    public KJ_Model_Picklist.Sector        sector              { get; private set; }
+    public KJ_Model_Picklist.Territory     serviceTerritory    { get; private set; }
 
     // Notes
-    public String               officeNotes         { get; private set; }
-    public String               fieldNotes          { get; private set; }
+    public String                          officeNotes         { get; private set; }
+    public String                          fieldNotes          { get; private set; }
 
     // Contact
-    public String               phone               { get; private set; }
-    public String               email               { get; private set; }
-    public Id                   primaryContactId    { get; private set; }
+    public String                          phone               { get; private set; }
+    public String                          email               { get; private set; }
+    public Id                              primaryContactId    { get; private set; }
 
     // Location
-    public String               billingStreet       { get; private set; }
-    public String               billingCity         { get; private set; }
-    public String               billingState        { get; private set; }
-    public String               billingPostalCode   { get; private set; }
+    public String                          billingStreet       { get; private set; }
+    public String                          billingCity         { get; private set; }
+    public String                          billingState        { get; private set; }
+    public String                          billingPostalCode   { get; private set; }
 
     // Financial
-    public Decimal              invoicedRevenue     { get; private set; }
-    public Date                 customerSince       { get; private set; }
-    public Date                 lastServiceDate     { get; private set; }
+    public Decimal                         invoicedRevenue     { get; private set; }
+    public Date                            customerSince       { get; private set; }
+    public Date                            lastServiceDate     { get; private set; }
 
     // Referral
-    public String               leadSource          { get; private set; }
-    public String               referredBy          { get; private set; }
-    public String               referredByEmail     { get; private set; }
-    public String               referredByPhone     { get; private set; }
+    public String                          leadSource          { get; private set; }
+    public String                          referredBy          { get; private set; }
+    public String                          referredByEmail     { get; private set; }
+    public String                          referredByPhone     { get; private set; }
 
     // Attribution
-    public String               gclid               { get; private set; }
-    public String               utmSource           { get; private set; }
-    public String               utmMedium           { get; private set; }
-    public String               utmCampaign         { get; private set; }
-    public String               utmTerm             { get; private set; }
-    public String               utmContent          { get; private set; }
+    public String                          gclid               { get; private set; }
+    public String                          utmSource           { get; private set; }
+    public String                          utmMedium           { get; private set; }
+    public String                          utmCampaign         { get; private set; }
+    public String                          utmTerm             { get; private set; }
+    public String                          utmContent          { get; private set; }
 
     // Metadata
-    public Id                   ownerId             { get; private set; }
-    public Id                   createdById         { get; private set; }
-    public Id                   lastModifiedById    { get; private set; }
-    public RecordOrigin         recordOrigin        { get; private set; }
-    public String               originRecordId      { get; private set; }
-    public Datetime             originCreatedDate   { get; private set; }
-    public String               fieldPulseId        { get; private set; }
-    public String               qboCustomerId       { get; private set; }
+    public Id                              ownerId             { get; private set; }
+    public Id                              createdById         { get; private set; }
+    public Id                              lastModifiedById    { get; private set; }
+    public KJ_Model_Picklist.RecordOrigin  recordOrigin        { get; private set; }
+    public String                          originRecordId      { get; private set; }
+    public Datetime                        originCreatedDate   { get; private set; }
+    public String                          fieldPulseId        { get; private set; }
+    public String                          qboCustomerId       { get; private set; }
 
 
     //*-- 3. Static Methods ------------------------------------------------------------------------
 
-    //*--    3.1 Picklist Mapping ------------------------------------------------------------------
-    public static Status mapToStatus(String statusValue){
-        if(String.isBlank(statusValue)) { return Status.UNKNOWN; }
-        switch on statusValue.toUpperCase() {
-            when 'LEAD'                                     { return Status.LEAD; }
-            when 'CURRENT CUSTOMER', 'CURRENT_CUSTOMER'     { return Status.CURRENT_CUSTOMER; }
-            when 'LOST'                                     { return Status.LOST; }
-            when else                                       { return Status.UNKNOWN; }
-        }
-    }
-    public static String mapToString(Status statusValue){
-        switch on statusValue {
-            when LEAD               { return 'Lead'; }
-            when CURRENT_CUSTOMER   { return 'Current Customer'; }
-            when LOST               { return 'Lost'; }
-            when else               { return null; }
-        }
-    }
-
-    public static Sector mapToSector(String sectorValue){
-        if(String.isBlank(sectorValue)) { return Sector.UNKNOWN; }
-        switch on sectorValue.toUpperCase() {
-            when 'RESIDENTIAL'  { return Sector.RESIDENTIAL; }
-            when 'COMMERCIAL'   { return Sector.COMMERCIAL; }
-            when else           { return Sector.UNKNOWN; }
-        }
-    }
-    public static String mapToString(Sector sectorValue){
-        switch on sectorValue {
-            when RESIDENTIAL    { return 'Residential'; }
-            when COMMERCIAL     { return 'Commercial'; }
-            when else           { return null; }
-        }
-    }
-
-    public static ServiceTerritory mapToServiceTerritory(String serviceTerritoryValue){
-        if(String.isBlank(serviceTerritoryValue)) { return ServiceTerritory.UNKNOWN; }
-        switch on serviceTerritoryValue.toUpperCase() {
-            when 'NWA'          { return ServiceTerritory.NWA; }
-            when 'TULSA'        { return ServiceTerritory.TULSA; }
-            when else           { return ServiceTerritory.UNKNOWN; }
-        }
-    }
-    public static String mapToString(ServiceTerritory serviceTerritoryValue){
-        switch on serviceTerritoryValue {
-            when NWA            { return 'NWA'; }
-            when TULSA          { return 'Tulsa'; }
-            when else           { return null; }
-        }
-    }
-
-    public static RecordOrigin mapToRecordOrigin(String originValue){
-        if(String.isBlank(originValue)) { return RecordOrigin.UNKNOWN; }
-        switch on originValue.toUpperCase() {
-            when 'FIELDPULSE'       { return RecordOrigin.FIELDPULSE; }
-            when 'QBO'              { return RecordOrigin.QBO; }
-            when 'SALESFORCE'       { return RecordOrigin.SALESFORCE; }
-            when 'SALESFORCE_V1'    { return RecordOrigin.SALESFORCE_V1; }
-            when else               { return RecordOrigin.UNKNOWN; }
-        }
-    }
-    public static String mapToString(RecordOrigin originValue){
-        switch on originValue {
-            when FIELDPULSE     { return 'FieldPulse'; }
-            when QBO            { return 'QBO'; }
-            when SALESFORCE     { return 'SALESFORCE'; }
-            when SALESFORCE_V1  { return 'SALESFORCE_V1'; }
-            when else           { return null; }
-        }
-    }
-
-
-
-    //*--    3.2 Factories -------------------------------------------------------------------------
+    //*--    3.1 Factories -------------------------------------------------------------------------
     public static KJ_Model_Account build(Account initRecord){
         KJ_Model_Account newModel = new KJ_Model_Account();
         if(initRecord == null) { return newModel; }
@@ -229,9 +150,9 @@ public with sharing class KJ_Model_Account {
         newModel.parentId           = source.ParentId                   ?? newModel.parentId;
         newModel.recordTypeId       = source.RecordTypeId               ?? newModel.recordTypeId;
         newModel.name               = source.Name                       ?? newModel.name;
-        newModel.status             = mapToStatus(source.Account_Status__c);
-        newModel.sector             = mapToSector(source.Account_Sector__c);
-        newModel.serviceTerritory   = mapToServiceTerritory(source.Branch_Territory__c);
+        newModel.status             = KJ_Model_Picklist.mapToAccountStatus(source.Account_Status__c);
+        newModel.sector             = KJ_Model_Picklist.mapToSector(source.Account_Sector__c);
+        newModel.serviceTerritory   = KJ_Model_Picklist.mapToTerritory(source.Branch_Territory__c);
 
         // Notes
         newModel.officeNotes        = source.Office_Notes__c            ?? newModel.officeNotes;
@@ -271,7 +192,7 @@ public with sharing class KJ_Model_Account {
         newModel.ownerId            = source.OwnerId                    ?? newModel.ownerId;
         newModel.createdById        = source.CreatedById                ?? newModel.createdById;
         newModel.lastModifiedById   = source.LastModifiedById           ?? newModel.lastModifiedById;
-        newModel.recordOrigin       = mapToRecordOrigin(source.Record_Origin__c);
+        newModel.recordOrigin       = KJ_Model_Picklist.mapToRecordOrigin(source.Record_Origin__c);
         newModel.originRecordId     = source.Origin_Record_Id__c        ?? newModel.originRecordId;
         newModel.originCreatedDate  = source.Origin_Created_Date__c     ?? newModel.originCreatedDate;
         newModel.fieldPulseId       = source.FieldPulse_Id__c           ?? newModel.fieldPulseId;
@@ -306,7 +227,7 @@ public with sharing class KJ_Model_Account {
         return newModels;
     }
 
-    //*--    3.3 Static Field Ops  --------------------------------------------------------------------
+    //*--    3.2 Static Field Ops  --------------------------------------------------------------------
     public static List<SObjectField> getFields(){
         List<SObjectField> allFields = new List<SObjectField>();
         allFields.addAll(VITAL_DATA);
@@ -320,7 +241,7 @@ public with sharing class KJ_Model_Account {
         return allFields;
     }
 
-    //*--    3.4 Internal --------------------------------------------------------------------------
+    //*--    3.3 Internal --------------------------------------------------------------------------
     private static void put(Account targetRecord, SObjectField targetField, Object targetValue){
         if(targetValue != null) { targetRecord.put(targetField, targetValue); }
     }
@@ -393,9 +314,9 @@ public with sharing class KJ_Model_Account {
         put(newRecord, Account.ParentId,                    this.parentId);
         put(newRecord, Account.RecordTypeId,                this.recordTypeId);
         put(newRecord, Account.Name,                        this.name);
-        put(newRecord, Account.Account_Status__c,           mapToString(this.status));
-        put(newRecord, Account.Account_Sector__c,           mapToString(this.sector));
-        put(newRecord, Account.Branch_Territory__c,         mapToString(this.serviceTerritory));
+        put(newRecord, Account.Account_Status__c,           KJ_Model_Picklist.mapToString(this.status));
+        put(newRecord, Account.Account_Sector__c,           KJ_Model_Picklist.mapToString(this.sector));
+        put(newRecord, Account.Branch_Territory__c,         KJ_Model_Picklist.mapToString(this.serviceTerritory));
 
         // Notes
         put(newRecord, Account.Office_Notes__c,             this.officeNotes);
@@ -433,7 +354,7 @@ public with sharing class KJ_Model_Account {
 
         // Metadata — CreatedById and LastModifiedById omitted, not writeable
         put(newRecord, Account.OwnerId,                     this.ownerId);
-        put(newRecord, Account.Record_Origin__c,            mapToString(this.recordOrigin));
+        put(newRecord, Account.Record_Origin__c,            KJ_Model_Picklist.mapToString(this.recordOrigin));
         put(newRecord, Account.Origin_Record_Id__c,         this.originRecordId);
         put(newRecord, Account.Origin_Created_Date__c,      this.originCreatedDate);
         put(newRecord, Account.FieldPulse_Id__c,            this.fieldPulseId);
@@ -460,15 +381,15 @@ public with sharing class KJ_Model_Account {
         this.name = initName ?? this.name;
         return this;
     }
-    public KJ_Model_Account setStatus(Status initStatus){
+    public KJ_Model_Account setStatus(KJ_Model_Picklist.AccountStatus initStatus){
         this.status = initStatus ?? this.status;
         return this;
     }
-    public KJ_Model_Account setSector(Sector initSector){
+    public KJ_Model_Account setSector(KJ_Model_Picklist.Sector initSector){
         this.sector = initSector ?? this.sector;
         return this;
     }
-    public KJ_Model_Account setServiceTerritory(ServiceTerritory initServiceTerritory){
+    public KJ_Model_Account setServiceTerritory(KJ_Model_Picklist.Territory initServiceTerritory){
         this.serviceTerritory = initServiceTerritory ?? this.serviceTerritory;
         return this;
     }
@@ -574,7 +495,7 @@ public with sharing class KJ_Model_Account {
     }
 
     // Metadata
-    public KJ_Model_Account setRecordOrigin(RecordOrigin initRecordOrigin){
+    public KJ_Model_Account setRecordOrigin(KJ_Model_Picklist.RecordOrigin initRecordOrigin){
         this.recordOrigin = initRecordOrigin ?? this.recordOrigin;
         return this;
     }
