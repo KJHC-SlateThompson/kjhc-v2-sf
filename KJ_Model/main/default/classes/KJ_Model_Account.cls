@@ -1,3 +1,10 @@
+/* 
+*   File: KJ_Model_Account.cls
+*   Authors: Slate Thompson (Slate@kintyjones.com)
+*   Created: 8/15/2026
+*   Description: This class is built to act as a code interface for the Account object
+*/
+
 public with sharing class KJ_Model_Account {
 
     //*-- 1. Constants -----------------------------------------------------------------------------
@@ -182,7 +189,7 @@ public with sharing class KJ_Model_Account {
     public static String mapToString(ServiceTerritory serviceTerritoryValue){
         switch on serviceTerritoryValue {
             when NWA            { return 'NWA'; }
-            when TULSA          { return 'TULSA'; }
+            when TULSA          { return 'Tulsa'; }
             when else           { return null; }
         }
     }
@@ -583,7 +590,7 @@ public with sharing class KJ_Model_Account {
         this.fieldPulseId = initFieldPulseId ?? this.fieldPulseId;
         return this;
     }
-    public KJ_Model_Account setQcode KJ_Model\main\default\classes\KJ_Model_Account.clsboCustomerId(String initQboCustomerId){
+    public KJ_Model_Account setQboCustomerId(String initQboCustomerId){
         this.qboCustomerId = initQboCustomerId ?? this.qboCustomerId;
         return this;
     }
