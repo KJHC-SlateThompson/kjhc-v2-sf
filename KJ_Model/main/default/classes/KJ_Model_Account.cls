@@ -25,7 +25,6 @@ public with sharing class KJ_Model_Account {
     };
     public static final List<SObjectField> CONTACT_DATA = new List<SObjectField>{
         Account.Phone,
-        Account.Email__c,
         Account.Account_Primary_Contact__c
     };
     public static final List<SObjectField> LOCATION_DATA = new List<SObjectField>{
@@ -96,7 +95,6 @@ public with sharing class KJ_Model_Account {
 
     // Contact
     public String                          phone               { get; private set; }
-    public String                          email               { get; private set; }
     public Id                              primaryContactId    { get; private set; }
 
     // Location
@@ -142,61 +140,59 @@ public with sharing class KJ_Model_Account {
         KJ_Model_Account newModel = new KJ_Model_Account();
         if(initRecord == null) { return newModel; }
 
-        Account source = new Account();
-        source.putAll(initRecord);
+        Map<String, Object> source = initRecord.getPopulatedFieldsAsMap();
 
         // Vital
-        newModel.recordId           = source.Id                         ?? newModel.recordId;
-        newModel.parentId           = source.ParentId                   ?? newModel.parentId;
-        newModel.recordTypeId       = source.RecordTypeId               ?? newModel.recordTypeId;
-        newModel.name               = source.Name                       ?? newModel.name;
-        newModel.status             = KJ_Model_Picklist.mapToAccountStatus(source.Account_Status__c);
-        newModel.sector             = KJ_Model_Picklist.mapToSector(source.Account_Sector__c);
-        newModel.serviceTerritory   = KJ_Model_Picklist.mapToTerritory(source.Branch_Territory__c);
+        newModel.recordId           = (Id)      read(source, Account.Id)                          ?? newModel.recordId;
+        newModel.parentId           = (Id)      read(source, Account.ParentId)                    ?? newModel.parentId;
+        newModel.recordTypeId       = (Id)      read(source, Account.RecordTypeId)                ?? newModel.recordTypeId;
+        newModel.name               = (String)  read(source, Account.Name)                        ?? newModel.name;
+        newModel.status             = KJ_Model_Picklist.mapToAccountStatus((String) read(source, Account.Account_Status__c));
+        newModel.sector             = KJ_Model_Picklist.mapToSector((String) read(source, Account.Account_Sector__c));
+        newModel.serviceTerritory   = KJ_Model_Picklist.mapToTerritory((String) read(source, Account.Branch_Territory__c));
 
         // Notes
-        newModel.officeNotes        = source.Office_Notes__c            ?? newModel.officeNotes;
-        newModel.fieldNotes         = source.Field_Notes__c             ?? newModel.fieldNotes;
+        newModel.officeNotes        = (String)  read(source, Account.Office_Notes__c)             ?? newModel.officeNotes;
+        newModel.fieldNotes         = (String)  read(source, Account.Field_Notes__c)              ?? newModel.fieldNotes;
 
         // Contact
-        newModel.phone              = source.Phone                      ?? newModel.phone;
-        newModel.email              = source.Email__c                   ?? newModel.email;
-        newModel.primaryContactId   = source.Account_Primary_Contact__c ?? newModel.primaryContactId;
+        newModel.phone              = (String)  read(source, Account.Phone)                       ?? newModel.phone;
+        newModel.primaryContactId   = (Id)      read(source, Account.Account_Primary_Contact__c)  ?? newModel.primaryContactId;
 
         // Location
-        newModel.billingStreet      = source.BillingStreet              ?? newModel.billingStreet;
-        newModel.billingCity        = source.BillingCity                ?? newModel.billingCity;
-        newModel.billingState       = source.BillingState               ?? newModel.billingState;
-        newModel.billingPostalCode  = source.BillingPostalCode          ?? newModel.billingPostalCode;
+        newModel.billingStreet      = (String)  read(source, Account.BillingStreet)               ?? newModel.billingStreet;
+        newModel.billingCity        = (String)  read(source, Account.BillingCity)                 ?? newModel.billingCity;
+        newModel.billingState       = (String)  read(source, Account.BillingState)                ?? newModel.billingState;
+        newModel.billingPostalCode  = (String)  read(source, Account.BillingPostalCode)           ?? newModel.billingPostalCode;
 
         // Financial
-        newModel.invoicedRevenue    = source.Invoiced_Revenue__c        ?? newModel.invoicedRevenue;
-        newModel.customerSince      = source.Customer_Since__c          ?? newModel.customerSince;
-        newModel.lastServiceDate    = source.Last_Service_Date__c       ?? newModel.lastServiceDate;
+        newModel.invoicedRevenue    = (Decimal) read(source, Account.Invoiced_Revenue__c)         ?? newModel.invoicedRevenue;
+        newModel.customerSince      = (Date)    read(source, Account.Customer_Since__c)           ?? newModel.customerSince;
+        newModel.lastServiceDate    = (Date)    read(source, Account.Last_Service_Date__c)        ?? newModel.lastServiceDate;
 
         // Referral
-        newModel.leadSource         = source.Account_Lead_Source__c     ?? newModel.leadSource;
-        newModel.referredBy         = source.Referred_By__c             ?? newModel.referredBy;
-        newModel.referredByEmail    = source.Referred_By_Email__c       ?? newModel.referredByEmail;
-        newModel.referredByPhone    = source.Referred_By_Phone__c       ?? newModel.referredByPhone;
+        newModel.leadSource         = (String)  read(source, Account.Account_Lead_Source__c)      ?? newModel.leadSource;
+        newModel.referredBy         = (String)  read(source, Account.Referred_By__c)              ?? newModel.referredBy;
+        newModel.referredByEmail    = (String)  read(source, Account.Referred_By_Email__c)        ?? newModel.referredByEmail;
+        newModel.referredByPhone    = readText(source, Account.Referred_By_Phone__c)              ?? newModel.referredByPhone;
 
         // Attribution
-        newModel.gclid              = source.GCLID__c                   ?? newModel.gclid;
-        newModel.utmSource          = source.UTM_Source__c              ?? newModel.utmSource;
-        newModel.utmMedium          = source.UTM_Medium__c              ?? newModel.utmMedium;
-        newModel.utmCampaign        = source.UTM_Campaign__c            ?? newModel.utmCampaign;
-        newModel.utmTerm            = source.UTM_Term__c                ?? newModel.utmTerm;
-        newModel.utmContent         = source.UTM_Content__c             ?? newModel.utmContent;
+        newModel.gclid              = (String)  read(source, Account.GCLID__c)                    ?? newModel.gclid;
+        newModel.utmSource          = (String)  read(source, Account.UTM_Source__c)               ?? newModel.utmSource;
+        newModel.utmMedium          = (String)  read(source, Account.UTM_Medium__c)               ?? newModel.utmMedium;
+        newModel.utmCampaign        = (String)  read(source, Account.UTM_Campaign__c)             ?? newModel.utmCampaign;
+        newModel.utmTerm            = (String)  read(source, Account.UTM_Term__c)                 ?? newModel.utmTerm;
+        newModel.utmContent         = (String)  read(source, Account.UTM_Content__c)              ?? newModel.utmContent;
 
         // Metadata
-        newModel.ownerId            = source.OwnerId                    ?? newModel.ownerId;
-        newModel.createdById        = source.CreatedById                ?? newModel.createdById;
-        newModel.lastModifiedById   = source.LastModifiedById           ?? newModel.lastModifiedById;
-        newModel.recordOrigin       = KJ_Model_Picklist.mapToRecordOrigin(source.Record_Origin__c);
-        newModel.originRecordId     = source.Origin_Record_Id__c        ?? newModel.originRecordId;
-        newModel.originCreatedDate  = source.Origin_Created_Date__c     ?? newModel.originCreatedDate;
-        newModel.fieldPulseId       = source.FieldPulse_Id__c           ?? newModel.fieldPulseId;
-        newModel.qboCustomerId      = source.QBO_Customer_Id__c         ?? newModel.qboCustomerId;
+        newModel.ownerId            = (Id)      read(source, Account.OwnerId)                     ?? newModel.ownerId;
+        newModel.createdById        = (Id)      read(source, Account.CreatedById)                 ?? newModel.createdById;
+        newModel.lastModifiedById   = (Id)      read(source, Account.LastModifiedById)            ?? newModel.lastModifiedById;
+        newModel.recordOrigin       = KJ_Model_Picklist.mapToRecordOrigin((String) read(source, Account.Record_Origin__c));
+        newModel.originRecordId     = (String)  read(source, Account.Origin_Record_Id__c)         ?? newModel.originRecordId;
+        newModel.originCreatedDate  = (Datetime) read(source, Account.Origin_Created_Date__c)     ?? newModel.originCreatedDate;
+        newModel.fieldPulseId       = (String)  read(source, Account.FieldPulse_Id__c)            ?? newModel.fieldPulseId;
+        newModel.qboCustomerId      = (String)  read(source, Account.QBO_Customer_Id__c)          ?? newModel.qboCustomerId;
 
         return newModel;
     }
@@ -246,6 +242,20 @@ public with sharing class KJ_Model_Account {
         if(targetValue != null) { targetRecord.put(targetField, targetValue); }
     }
 
+    // Reading a field the caller never queried throws an SObjectException, so build() works off the
+    // populated-field map rather than the record. An absent field reads as null and falls through to
+    // whatever the constructor already set.
+    private static Object read(Map<String, Object> sourceFields, SObjectField targetField){
+        return sourceFields.get(String.valueOf(targetField));
+    }
+
+    // Referred_By_Phone__c is a Number field in the org, so it reads back as a Decimal while the model
+    // keeps phone numbers as text. Normalizing here avoids a TypeException on a straight (String) cast.
+    private static String readText(Map<String, Object> sourceFields, SObjectField targetField){
+        Object fieldValue = read(sourceFields, targetField);
+        return fieldValue == null ? null : String.valueOf(fieldValue);
+    }
+
 
     //*-- 4. Instance Methods ----------------------------------------------------------------------
 
@@ -266,7 +276,6 @@ public with sharing class KJ_Model_Account {
 
         // Contact
         this.phone              = DEFAULT_TEXT;
-        this.email              = DEFAULT_TEXT;
         this.primaryContactId   = null;
 
         // Location
@@ -324,7 +333,6 @@ public with sharing class KJ_Model_Account {
 
         // Contact
         put(newRecord, Account.Phone,                       this.phone);
-        put(newRecord, Account.Email__c,                    this.email);
         put(newRecord, Account.Account_Primary_Contact__c,  this.primaryContactId);
 
         // Location
@@ -407,10 +415,6 @@ public with sharing class KJ_Model_Account {
     // Contact
     public KJ_Model_Account setPhone(String initPhone){
         this.phone = initPhone ?? this.phone;
-        return this;
-    }
-    public KJ_Model_Account setEmail(String initEmail){
-        this.email = initEmail ?? this.email;
         return this;
     }
     public KJ_Model_Account setPrimaryContactId(Id initPrimaryContactId){
