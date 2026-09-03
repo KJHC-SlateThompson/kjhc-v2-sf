@@ -14,7 +14,6 @@ public with sharing class KJ_Model_Account {
         Account.Id,
         Account.Name,
         Account.ParentId,
-        Account.RecordTypeId,
         Account.Account_Status__c,
         Account.Account_Sector__c,
         Account.Branch_Territory__c
@@ -59,8 +58,8 @@ public with sharing class KJ_Model_Account {
         Account.Record_Origin__c,
         Account.Origin_Record_Id__c,
         Account.Origin_Created_Date__c,
-        Account.FieldPulse_Id__c,
-        Account.QBO_Customer_Id__c
+        Account.FieldPulse_Account_Id__c,
+        Account.QBO_Account_Id__c
     };
 
     //*--    1.2 Type Defaults ---------------------------------------------------------------------
@@ -83,11 +82,10 @@ public with sharing class KJ_Model_Account {
     // Vital
     public Id                              recordId            { get; private set; }
     public Id                              parentId            { get; private set; }
-    public Id                              recordTypeId        { get; private set; }
     public String                          name                { get; private set; }
     public KJ_Model_Picklist.AccountStatus status              { get; private set; }
     public KJ_Model_Picklist.Sector        sector              { get; private set; }
-    public KJ_Model_Picklist.Territory     serviceTerritory    { get; private set; }
+    public KJ_Model_Picklist.Territory     branchTerritory     { get; private set; }
 
     // Notes
     public String                          officeNotes         { get; private set; }
@@ -129,8 +127,8 @@ public with sharing class KJ_Model_Account {
     public KJ_Model_Picklist.RecordOrigin  recordOrigin        { get; private set; }
     public String                          originRecordId      { get; private set; }
     public Datetime                        originCreatedDate   { get; private set; }
-    public String                          fieldPulseId        { get; private set; }
-    public String                          qboCustomerId       { get; private set; }
+    public String                          fieldPulseAccountId { get; private set; }
+    public String                          qboAccountId        { get; private set; }
 
 
     //*-- 3. Static Methods ------------------------------------------------------------------------
@@ -143,56 +141,55 @@ public with sharing class KJ_Model_Account {
         Map<String, Object> source = initRecord.getPopulatedFieldsAsMap();
 
         // Vital
-        newModel.recordId           = (Id)      read(source, Account.Id)                          ?? newModel.recordId;
-        newModel.parentId           = (Id)      read(source, Account.ParentId)                    ?? newModel.parentId;
-        newModel.recordTypeId       = (Id)      read(source, Account.RecordTypeId)                ?? newModel.recordTypeId;
-        newModel.name               = (String)  read(source, Account.Name)                        ?? newModel.name;
-        newModel.status             = KJ_Model_Picklist.mapToAccountStatus((String) read(source, Account.Account_Status__c));
-        newModel.sector             = KJ_Model_Picklist.mapToSector((String) read(source, Account.Account_Sector__c));
-        newModel.serviceTerritory   = KJ_Model_Picklist.mapToTerritory((String) read(source, Account.Branch_Territory__c));
+        newModel.recordId            = (Id)      read(source, Account.Id)                          ?? newModel.recordId;
+        newModel.parentId            = (Id)      read(source, Account.ParentId)                    ?? newModel.parentId;
+        newModel.name                = (String)  read(source, Account.Name)                        ?? newModel.name;
+        newModel.status              = KJ_Model_Picklist.mapToAccountStatus((String) read(source, Account.Account_Status__c));
+        newModel.sector              = KJ_Model_Picklist.mapToSector((String) read(source, Account.Account_Sector__c));
+        newModel.branchTerritory     = KJ_Model_Picklist.mapToTerritory((String) read(source, Account.Branch_Territory__c));
 
         // Notes
-        newModel.officeNotes        = (String)  read(source, Account.Office_Notes__c)             ?? newModel.officeNotes;
-        newModel.fieldNotes         = (String)  read(source, Account.Field_Notes__c)              ?? newModel.fieldNotes;
+        newModel.officeNotes         = (String)  read(source, Account.Office_Notes__c)             ?? newModel.officeNotes;
+        newModel.fieldNotes          = (String)  read(source, Account.Field_Notes__c)              ?? newModel.fieldNotes;
 
         // Contact
-        newModel.phone              = (String)  read(source, Account.Phone)                       ?? newModel.phone;
-        newModel.primaryContactId   = (Id)      read(source, Account.Account_Primary_Contact__c)  ?? newModel.primaryContactId;
+        newModel.phone               = (String)  read(source, Account.Phone)                       ?? newModel.phone;
+        newModel.primaryContactId    = (Id)      read(source, Account.Account_Primary_Contact__c)  ?? newModel.primaryContactId;
 
         // Location
-        newModel.billingStreet      = (String)  read(source, Account.BillingStreet)               ?? newModel.billingStreet;
-        newModel.billingCity        = (String)  read(source, Account.BillingCity)                 ?? newModel.billingCity;
-        newModel.billingState       = (String)  read(source, Account.BillingState)                ?? newModel.billingState;
-        newModel.billingPostalCode  = (String)  read(source, Account.BillingPostalCode)           ?? newModel.billingPostalCode;
+        newModel.billingStreet       = (String)  read(source, Account.BillingStreet)               ?? newModel.billingStreet;
+        newModel.billingCity         = (String)  read(source, Account.BillingCity)                 ?? newModel.billingCity;
+        newModel.billingState        = (String)  read(source, Account.BillingState)                ?? newModel.billingState;
+        newModel.billingPostalCode   = (String)  read(source, Account.BillingPostalCode)           ?? newModel.billingPostalCode;
 
         // Financial
-        newModel.invoicedRevenue    = (Decimal) read(source, Account.Invoiced_Revenue__c)         ?? newModel.invoicedRevenue;
-        newModel.customerSince      = (Date)    read(source, Account.Customer_Since__c)           ?? newModel.customerSince;
-        newModel.lastServiceDate    = (Date)    read(source, Account.Last_Service_Date__c)        ?? newModel.lastServiceDate;
+        newModel.invoicedRevenue     = (Decimal) read(source, Account.Invoiced_Revenue__c)         ?? newModel.invoicedRevenue;
+        newModel.customerSince       = (Date)    read(source, Account.Customer_Since__c)           ?? newModel.customerSince;
+        newModel.lastServiceDate     = (Date)    read(source, Account.Last_Service_Date__c)        ?? newModel.lastServiceDate;
 
         // Referral
-        newModel.leadSource         = (String)  read(source, Account.Account_Lead_Source__c)      ?? newModel.leadSource;
-        newModel.referredBy         = (String)  read(source, Account.Referred_By__c)              ?? newModel.referredBy;
-        newModel.referredByEmail    = (String)  read(source, Account.Referred_By_Email__c)        ?? newModel.referredByEmail;
-        newModel.referredByPhone    = readText(source, Account.Referred_By_Phone__c)              ?? newModel.referredByPhone;
+        newModel.leadSource          = (String)  read(source, Account.Account_Lead_Source__c)      ?? newModel.leadSource;
+        newModel.referredBy          = (String)  read(source, Account.Referred_By__c)              ?? newModel.referredBy;
+        newModel.referredByEmail     = (String)  read(source, Account.Referred_By_Email__c)        ?? newModel.referredByEmail;
+        newModel.referredByPhone     = readText(source, Account.Referred_By_Phone__c)              ?? newModel.referredByPhone;
 
         // Attribution
-        newModel.gclid              = (String)  read(source, Account.GCLID__c)                    ?? newModel.gclid;
-        newModel.utmSource          = (String)  read(source, Account.UTM_Source__c)               ?? newModel.utmSource;
-        newModel.utmMedium          = (String)  read(source, Account.UTM_Medium__c)               ?? newModel.utmMedium;
-        newModel.utmCampaign        = (String)  read(source, Account.UTM_Campaign__c)             ?? newModel.utmCampaign;
-        newModel.utmTerm            = (String)  read(source, Account.UTM_Term__c)                 ?? newModel.utmTerm;
-        newModel.utmContent         = (String)  read(source, Account.UTM_Content__c)              ?? newModel.utmContent;
+        newModel.gclid               = (String)  read(source, Account.GCLID__c)                    ?? newModel.gclid;
+        newModel.utmSource           = (String)  read(source, Account.UTM_Source__c)               ?? newModel.utmSource;
+        newModel.utmMedium           = (String)  read(source, Account.UTM_Medium__c)               ?? newModel.utmMedium;
+        newModel.utmCampaign         = (String)  read(source, Account.UTM_Campaign__c)             ?? newModel.utmCampaign;
+        newModel.utmTerm             = (String)  read(source, Account.UTM_Term__c)                 ?? newModel.utmTerm;
+        newModel.utmContent          = (String)  read(source, Account.UTM_Content__c)              ?? newModel.utmContent;
 
         // Metadata
-        newModel.ownerId            = (Id)      read(source, Account.OwnerId)                     ?? newModel.ownerId;
-        newModel.createdById        = (Id)      read(source, Account.CreatedById)                 ?? newModel.createdById;
-        newModel.lastModifiedById   = (Id)      read(source, Account.LastModifiedById)            ?? newModel.lastModifiedById;
-        newModel.recordOrigin       = KJ_Model_Picklist.mapToRecordOrigin((String) read(source, Account.Record_Origin__c));
-        newModel.originRecordId     = (String)  read(source, Account.Origin_Record_Id__c)         ?? newModel.originRecordId;
-        newModel.originCreatedDate  = (Datetime) read(source, Account.Origin_Created_Date__c)     ?? newModel.originCreatedDate;
-        newModel.fieldPulseId       = (String)  read(source, Account.FieldPulse_Id__c)            ?? newModel.fieldPulseId;
-        newModel.qboCustomerId      = (String)  read(source, Account.QBO_Customer_Id__c)          ?? newModel.qboCustomerId;
+        newModel.ownerId             = (Id)      read(source, Account.OwnerId)                     ?? newModel.ownerId;
+        newModel.createdById         = (Id)      read(source, Account.CreatedById)                 ?? newModel.createdById;
+        newModel.lastModifiedById    = (Id)      read(source, Account.LastModifiedById)            ?? newModel.lastModifiedById;
+        newModel.recordOrigin        = KJ_Model_Picklist.mapToRecordOrigin((String) read(source, Account.Record_Origin__c));
+        newModel.originRecordId      = (String)  read(source, Account.Origin_Record_Id__c)         ?? newModel.originRecordId;
+        newModel.originCreatedDate   = (Datetime) read(source, Account.Origin_Created_Date__c)     ?? newModel.originCreatedDate;
+        newModel.fieldPulseAccountId = (String)  read(source, Account.FieldPulse_Account_Id__c)    ?? newModel.fieldPulseAccountId;
+        newModel.qboAccountId        = (String)  read(source, Account.QBO_Account_Id__c)           ?? newModel.qboAccountId;
 
         return newModel;
     }
@@ -262,56 +259,55 @@ public with sharing class KJ_Model_Account {
     //*--    4.1 Constructor -----------------------------------------------------------------------
     public KJ_Model_Account() {
         // Vital
-        this.recordId           = null;
-        this.parentId           = null;
-        this.recordTypeId       = null;
-        this.name               = DEFAULT_TEXT;
-        this.status             = DEFAULT_STATUS;
-        this.sector             = DEFAULT_SECTOR;
-        this.serviceTerritory   = DEFAULT_TERRITORY;
+        this.recordId            = null;
+        this.parentId            = null;
+        this.name                = DEFAULT_TEXT;
+        this.status              = DEFAULT_STATUS;
+        this.sector              = DEFAULT_SECTOR;
+        this.branchTerritory     = DEFAULT_TERRITORY;
 
         // Notes
-        this.officeNotes        = DEFAULT_TEXT;
-        this.fieldNotes         = DEFAULT_TEXT;
+        this.officeNotes         = DEFAULT_TEXT;
+        this.fieldNotes          = DEFAULT_TEXT;
 
         // Contact
-        this.phone              = DEFAULT_TEXT;
-        this.primaryContactId   = null;
+        this.phone               = DEFAULT_TEXT;
+        this.primaryContactId    = null;
 
         // Location
-        this.billingStreet      = DEFAULT_TEXT;
-        this.billingCity        = DEFAULT_TEXT;
-        this.billingState       = DEFAULT_TEXT;
-        this.billingPostalCode  = DEFAULT_TEXT;
+        this.billingStreet       = DEFAULT_TEXT;
+        this.billingCity         = DEFAULT_TEXT;
+        this.billingState        = DEFAULT_TEXT;
+        this.billingPostalCode   = DEFAULT_TEXT;
 
         // Financial
-        this.invoicedRevenue    = DEFAULT_NUMBER;
-        this.customerSince      = DEFAULT_DATE;
-        this.lastServiceDate    = DEFAULT_DATE;
+        this.invoicedRevenue     = DEFAULT_NUMBER;
+        this.customerSince       = DEFAULT_DATE;
+        this.lastServiceDate     = DEFAULT_DATE;
 
         // Referral
-        this.leadSource         = DEFAULT_TEXT;
-        this.referredBy         = DEFAULT_TEXT;
-        this.referredByEmail    = DEFAULT_TEXT;
-        this.referredByPhone    = DEFAULT_TEXT;
+        this.leadSource          = DEFAULT_TEXT;
+        this.referredBy          = DEFAULT_TEXT;
+        this.referredByEmail     = DEFAULT_TEXT;
+        this.referredByPhone     = DEFAULT_TEXT;
 
         // Attribution
-        this.gclid              = DEFAULT_TEXT;
-        this.utmSource          = DEFAULT_TEXT;
-        this.utmMedium          = DEFAULT_TEXT;
-        this.utmCampaign        = DEFAULT_TEXT;
-        this.utmTerm            = DEFAULT_TEXT;
-        this.utmContent         = DEFAULT_TEXT;
+        this.gclid               = DEFAULT_TEXT;
+        this.utmSource           = DEFAULT_TEXT;
+        this.utmMedium           = DEFAULT_TEXT;
+        this.utmCampaign         = DEFAULT_TEXT;
+        this.utmTerm             = DEFAULT_TEXT;
+        this.utmContent          = DEFAULT_TEXT;
 
         // Metadata
-        this.ownerId            = null;
-        this.createdById        = null;
-        this.lastModifiedById   = null;
-        this.recordOrigin       = DEFAULT_ORIGIN;
-        this.originRecordId     = null;
-        this.originCreatedDate  = DEFAULT_DATETIME;
-        this.fieldPulseId       = null;
-        this.qboCustomerId      = null;
+        this.ownerId             = null;
+        this.createdById         = null;
+        this.lastModifiedById    = null;
+        this.recordOrigin        = DEFAULT_ORIGIN;
+        this.originRecordId      = null;
+        this.originCreatedDate   = DEFAULT_DATETIME;
+        this.fieldPulseAccountId = null;
+        this.qboAccountId        = null;
     }
 
     //*--    4.2 Conversion ------------------------------------------------------------------------
@@ -321,11 +317,10 @@ public with sharing class KJ_Model_Account {
         // Vital
         put(newRecord, Account.Id,                          this.recordId);
         put(newRecord, Account.ParentId,                    this.parentId);
-        put(newRecord, Account.RecordTypeId,                this.recordTypeId);
         put(newRecord, Account.Name,                        this.name);
         put(newRecord, Account.Account_Status__c,           KJ_Model_Picklist.mapToString(this.status));
         put(newRecord, Account.Account_Sector__c,           KJ_Model_Picklist.mapToString(this.sector));
-        put(newRecord, Account.Branch_Territory__c,         KJ_Model_Picklist.mapToString(this.serviceTerritory));
+        put(newRecord, Account.Branch_Territory__c,         KJ_Model_Picklist.mapToString(this.branchTerritory));
 
         // Notes
         put(newRecord, Account.Office_Notes__c,             this.officeNotes);
@@ -365,8 +360,8 @@ public with sharing class KJ_Model_Account {
         put(newRecord, Account.Record_Origin__c,            KJ_Model_Picklist.mapToString(this.recordOrigin));
         put(newRecord, Account.Origin_Record_Id__c,         this.originRecordId);
         put(newRecord, Account.Origin_Created_Date__c,      this.originCreatedDate);
-        put(newRecord, Account.FieldPulse_Id__c,            this.fieldPulseId);
-        put(newRecord, Account.QBO_Customer_Id__c,          this.qboCustomerId);
+        put(newRecord, Account.FieldPulse_Account_Id__c,    this.fieldPulseAccountId);
+        put(newRecord, Account.QBO_Account_Id__c,           this.qboAccountId);
 
         return newRecord;
     }
@@ -381,10 +376,6 @@ public with sharing class KJ_Model_Account {
         this.parentId = initParentId ?? this.parentId;
         return this;
     }
-    public KJ_Model_Account setRecordTypeId(Id initRecordTypeId){
-        this.recordTypeId = initRecordTypeId ?? this.recordTypeId;
-        return this;
-    }
     public KJ_Model_Account setName(String initName){
         this.name = initName ?? this.name;
         return this;
@@ -397,8 +388,8 @@ public with sharing class KJ_Model_Account {
         this.sector = initSector ?? this.sector;
         return this;
     }
-    public KJ_Model_Account setServiceTerritory(KJ_Model_Picklist.Territory initServiceTerritory){
-        this.serviceTerritory = initServiceTerritory ?? this.serviceTerritory;
+    public KJ_Model_Account setBranchTerritory(KJ_Model_Picklist.Territory initBranchTerritory){
+        this.branchTerritory = initBranchTerritory ?? this.branchTerritory;
         return this;
     }
 
@@ -511,12 +502,12 @@ public with sharing class KJ_Model_Account {
         this.originCreatedDate = initOriginCreatedDate ?? this.originCreatedDate;
         return this;
     }
-    public KJ_Model_Account setFieldPulseId(String initFieldPulseId){
-        this.fieldPulseId = initFieldPulseId ?? this.fieldPulseId;
+    public KJ_Model_Account setFieldPulseAccountId(String initFieldPulseAccountId){
+        this.fieldPulseAccountId = initFieldPulseAccountId ?? this.fieldPulseAccountId;
         return this;
     }
-    public KJ_Model_Account setQboCustomerId(String initQboCustomerId){
-        this.qboCustomerId = initQboCustomerId ?? this.qboCustomerId;
+    public KJ_Model_Account setQboAccountId(String initQboAccountId){
+        this.qboAccountId = initQboAccountId ?? this.qboAccountId;
         return this;
     }
 

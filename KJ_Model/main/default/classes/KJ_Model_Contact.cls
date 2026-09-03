@@ -12,7 +12,6 @@ public with sharing class KJ_Model_Contact {
     //*--    1.1 Field Groupings -------------------------------------------------------------------
     public static final List<SObjectField> VITAL_DATA = new List<SObjectField>{
         Contact.Id,
-        Contact.RecordTypeId,
         Contact.FirstName,
         Contact.LastName,
         Contact.AccountId,
@@ -75,7 +74,6 @@ public with sharing class KJ_Model_Contact {
 
     // Record
     public Id                               recordId                    { get; private set; }
-    public Id                               recordTypeId                { get; private set; }
 
     // Vitals
     public String                           firstName                   { get; private set; }
@@ -92,7 +90,7 @@ public with sharing class KJ_Model_Contact {
     // Contact Methods
     public KJ_Model_Picklist.ContactMethod  contactMethodPreference     { get; private set; }
     public Boolean                          doNotCall                   { get; private set; }
-    public Boolean                          emailOptOut                 { get; private set; }
+    public Boolean                          hasOptedOutOfEmail          { get; private set; }
     public String                           phone                       { get; private set; }
     public String                           secondPhone                 { get; private set; }
     public String                           email                       { get; private set; }
@@ -125,7 +123,6 @@ public with sharing class KJ_Model_Contact {
 
         // Record
         newModel.recordId                = (Id)      read(source, Contact.Id)                           ?? newModel.recordId;
-        newModel.recordTypeId            = (Id)      read(source, Contact.RecordTypeId)                 ?? newModel.recordTypeId;
 
         // Vitals
         newModel.firstName               = (String)  read(source, Contact.FirstName)                    ?? newModel.firstName;
@@ -142,7 +139,7 @@ public with sharing class KJ_Model_Contact {
         // Contact Methods
         newModel.contactMethodPreference = KJ_Model_Picklist.mapToContactMethod((String) read(source, Contact.Contact_Method_Preference__c));
         newModel.doNotCall               = (Boolean) read(source, Contact.DoNotCall)                    ?? newModel.doNotCall;
-        newModel.emailOptOut             = (Boolean) read(source, Contact.HasOptedOutOfEmail)           ?? newModel.emailOptOut;
+        newModel.hasOptedOutOfEmail      = (Boolean) read(source, Contact.HasOptedOutOfEmail)           ?? newModel.hasOptedOutOfEmail;
         newModel.phone                   = (String)  read(source, Contact.Phone)                        ?? newModel.phone;
         newModel.secondPhone             = (String)  read(source, Contact.Second_Phone__c)              ?? newModel.secondPhone;
         newModel.email                   = (String)  read(source, Contact.Email)                        ?? newModel.email;
@@ -232,7 +229,6 @@ public with sharing class KJ_Model_Contact {
     public KJ_Model_Contact() {
         // Record
         this.recordId                = null;
-        this.recordTypeId            = null;
 
         // Vitals
         this.firstName               = DEFAULT_TEXT;
@@ -249,7 +245,7 @@ public with sharing class KJ_Model_Contact {
         // Contact Methods
         this.contactMethodPreference = DEFAULT_CONTACT_METHOD_PREFERENCE;
         this.doNotCall               = DEFAULT_FLAG;
-        this.emailOptOut             = DEFAULT_FLAG;
+        this.hasOptedOutOfEmail      = DEFAULT_FLAG;
         this.phone                   = DEFAULT_TEXT;
         this.secondPhone             = DEFAULT_TEXT;
         this.email                   = DEFAULT_TEXT;
@@ -277,7 +273,6 @@ public with sharing class KJ_Model_Contact {
 
         // Record
         put(newRecord, Contact.Id,                           this.recordId);
-        put(newRecord, Contact.RecordTypeId,                 this.recordTypeId);
 
         // Vitals — Name omitted, not writeable; it is composed from FirstName and LastName.
         //          accountName omitted, it belongs to the parent Account.
@@ -294,7 +289,7 @@ public with sharing class KJ_Model_Contact {
         // Contact Methods
         put(newRecord, Contact.Contact_Method_Preference__c, KJ_Model_Picklist.mapToString(this.contactMethodPreference));
         put(newRecord, Contact.DoNotCall,                    this.doNotCall);
-        put(newRecord, Contact.HasOptedOutOfEmail,           this.emailOptOut);
+        put(newRecord, Contact.HasOptedOutOfEmail,           this.hasOptedOutOfEmail);
         put(newRecord, Contact.Phone,                        this.phone);
         put(newRecord, Contact.Second_Phone__c,              this.secondPhone);
         put(newRecord, Contact.Email,                        this.email);
@@ -320,10 +315,6 @@ public with sharing class KJ_Model_Contact {
     // Record
     public KJ_Model_Contact setRecordId(Id initRecordId){
         this.recordId = initRecordId ?? this.recordId;
-        return this;
-    }
-    public KJ_Model_Contact setRecordTypeId(Id initRecordTypeId){
-        this.recordTypeId = initRecordTypeId ?? this.recordTypeId;
         return this;
     }
 
@@ -372,8 +363,8 @@ public with sharing class KJ_Model_Contact {
         this.doNotCall = initDoNotCall ?? this.doNotCall;
         return this;
     }
-    public KJ_Model_Contact setEmailOptOut(Boolean initEmailOptOut){
-        this.emailOptOut = initEmailOptOut ?? this.emailOptOut;
+    public KJ_Model_Contact setHasOptedOutOfEmail(Boolean initHasOptedOutOfEmail){
+        this.hasOptedOutOfEmail = initHasOptedOutOfEmail ?? this.hasOptedOutOfEmail;
         return this;
     }
     public KJ_Model_Contact setPhone(String initPhone){
