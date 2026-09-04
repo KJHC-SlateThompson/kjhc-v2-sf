@@ -20,10 +20,10 @@ public with sharing class KJ_Tool_Package {
     public KJ_Tool_Package() {
         this.label          = '';
         this.dataBundle     = new KJ_Tool_DataBundle();
-        this.origin         = new KJ_Tool_Origin();
-
+        
         this.result         = new KJ_Tool_Result();
-
+        
+        this.origin         = new KJ_Tool_Origin();
         this.orgContext     = null;
         this.userContext    = null;
         this.triggerContext = null;

@@ -10,7 +10,8 @@ public with sharing class KJ_Tool_Origin {
     public enum SourceType{
         UNSPECIFIED,
         APEX,
-        RECORD
+        RECORD,
+        INTEGRATION
     }
 
     //*-- Member Variables ------------------------------------------------------------------------

@@ -42,6 +42,7 @@ public with sharing class KJ_Tool_TestDataFactory {
 
     // Picklist Values
     public static final Sector DEFAULT_SECTOR           = Sector.COMMERCIAL;
+    public static final String DEFAULT_ACCOUNT_STATUS   = 'Lead';
 
     // Misc. Strings
     public static final String DEFAULT_NOTES            = 'Here is a generic note sample: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ultricies tincidunt arcu in tempor. Vivamus in volutpat magna. Vivamus non arcu rutrum, blandit est sit amet, placerat odio. Donec elementum at erat vitae pharetra. Nulla tristique ligula arcu, vitae posuere nibh lobortis nec. Curabitur at magna in turpis elementum commodo ut sit amet lectus. Fusce sit amet velit et tellus fringilla hendrerit sed eu erat. Phasellus ac elementum tellus. Nullam sit amet aliquam sem, lobortis scelerisque magna. Phasellus condimentum elementum eros, ut porta orci faucibus vel. Proin efficitur purus vel tristique ultrices. Mauris et volutpat lacus. Donec et egestas sapien. Phasellus porttitor nunc a vulputate porttitor. Aliquam tincidunt, ante id egestas pharetra, tellus lorem tincidunt ligula, et auctor nisl nisi vel turpis.';
@@ -112,6 +113,7 @@ public with sharing class KJ_Tool_TestDataFactory {
             ParentId                    = parentIdArg,
             Account_Primary_Contact__c  = accountPrimaryContactIdArg,
             Account_Sector__c           = sectorPicklistValues.Get(sectorArg),
+            Account_Status__c           = DEFAULT_ACCOUNT_STATUS,
             Office_Notes__c             = DEFAULT_NOTES,
             Field_Notes__c              = DEFAULT_NOTES,
 
