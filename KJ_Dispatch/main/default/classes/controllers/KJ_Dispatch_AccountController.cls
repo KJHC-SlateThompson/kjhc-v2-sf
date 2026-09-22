@@ -10,4 +10,8 @@ public with sharing class KJ_Dispatch_AccountController extends KJ_Dispatch_Abst
     protected override String controllerName(){
         return 'KJ_Dispatch_AccountController';
     }
+    protected override void route(KJ_Tool_Package pkg){
+        // Stub. Present only to satisfy KJ_Dispatch_AbstractController so the domain compiles.
+        // Model the real implementation on KJ_Dispatch_LeadController when Account routing lands.
+    }
 }

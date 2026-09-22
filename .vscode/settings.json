@@ -13,5 +13,7 @@
     "**/Thumbs.db": true,
     ".mule": true
   },
-  "xml.preferences.showSchemaDocumentationType": "none"
+  "xml.preferences.showSchemaDocumentationType": "none",
+  "files.autoSave": "afterDelay",
+  "salesforce.agentforceVibesAutocomplete.enableAutocompletions": true
 }

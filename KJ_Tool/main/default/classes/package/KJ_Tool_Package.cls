@@ -20,10 +20,10 @@ public with sharing class KJ_Tool_Package {
     public KJ_Tool_Package() {
         this.label          = '';
         this.dataBundle     = new KJ_Tool_DataBundle();
-        this.origin         = new KJ_Tool_Origin();
-
+        
         this.result         = new KJ_Tool_Result();
-
+        
+        this.origin         = new KJ_Tool_Origin();
         this.orgContext     = null;
         this.userContext    = null;
         this.triggerContext = null;
@@ -38,6 +38,21 @@ public with sharing class KJ_Tool_Package {
     }
     public static KJ_Tool_Package build(){
         return build(null);
+    }
+
+    // Trigger lane assembly. Lives here so every trigger body stays a one-liner and the
+    // controller never has to reach into static Trigger state itself.
+    public static KJ_Tool_Package fromTrigger(String objectName, String triggerName){
+        return KJ_Tool_Package.build()
+                                .withLabel(objectName + ' Trigger Package')
+                                .withOrigin(KJ_Tool_Origin.fromApex(
+                                    triggerName + '.trigger',
+                                    triggerName,
+                                    'trigger body'
+                                ))
+                                .withOrgContext(KJ_Tool_OrgContext.build())
+                                .withUserContext(KJ_Tool_UserContext.build())
+                                .withTriggerContext(KJ_Tool_TriggerContext.build());
     }
 
     public KJ_Tool_Package withLabel(String initLabel){
