@@ -1,5 +1,5 @@
 /* 
-*   File: KJ_Tool_AbstractController.cls
+*   File: KJ_Dispatch_AbstractController.cls
 *   Authors: Slate Thompson (Slate@kintyjones.com)
 *   Created: 6/3/2026
 *   Description: This class is built to template per-object controllers
@@ -7,35 +7,34 @@
 
 public abstract class KJ_Dispatch_AbstractController {
     //*-- Member Methods --------------------------------------------------------------------------
-    // Method called by trigger
-    public KJ_Tool_Package run(){
-        KJ_Tool_Package pkg = KJ_Tool_Package.build();
+    // The domain's front door. Input domains assemble the package; the controller only receives it.
+    // Not virtual on purpose: every entry into KJ_Dispatch lands on the same error lane.
+    public KJ_Tool_Package receive(KJ_Tool_Package pkg){
+        KJ_Tool_Package inbound = pkg ?? KJ_Tool_Package.build();
+
+        // A null package is a caller error, not a routing failure. Record it, route nothing.
+        if (pkg == null) {
+            inbound.result.addException(KJ_Tool_Exception.fatal(
+                KJ_Tool_Exception.Code.INVALID_CONTEXT,
+                this.controllerName() + ' received a null package.'
+            ));
+            this.finalize(inbound);
+            return inbound;
+        }
+
         try{ 
-            pkg = this.buildPackage();
-            this.route(pkg);
+            this.route(inbound);
         }
         catch (Exception e) {
-            pkg.result.addException(
+            inbound.result.addException(
                 KJ_Tool_Exception.fatal(e, KJ_Tool_Exception.Code.ROUTING_ERROR)
             );
         }
-        this.finalize(pkg);
-        return pkg;
+        this.finalize(inbound);
+        return inbound;
     }
 
     protected abstract String controllerName();
-
-    protected virtual KJ_Tool_Package buildPackage() {
-        return KJ_Tool_Package.build(null)
-                                .withOrigin(KJ_Tool_Origin.fromApex(
-                                    this.controllerName() + '.cls',
-                                    this.controllerName(),
-                                    'buildPackage()'
-                                ))
-                                .withOrgContext(KJ_Tool_OrgContext.build())
-                                .withUserContext(KJ_Tool_UserContext.build())
-                                .withTriggerContext(KJ_Tool_TriggerContext.build());
-    }
 
     protected abstract void route(KJ_Tool_Package pkg);
 
