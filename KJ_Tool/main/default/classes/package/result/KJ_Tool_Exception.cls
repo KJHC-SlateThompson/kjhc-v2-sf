@@ -10,7 +10,8 @@ public with sharing class KJ_Tool_Exception extends Exception{
     public enum Code {
         ROUTING_ERROR, // Used if controller fails to route package. Typically appended to pkg.result.exceptions.
         INVALID_CONTEXT, // Used if a controller is invoked without the context its routing requires.
-        DEFAULT_CODE, 
+        MISSING_DATA, // Used if the dataBundle lacks what the engine needs to do its work.
+        DEFAULT_CODE,
         TEST_EXCEPTION
     }
     public enum Level {

@@ -7,16 +7,6 @@
 */
 public with sharing class KJ_Tool_TestDataFactory {
     // -- Constants -------------------------------------------------------------------------------
-    // Pick list values
-    public enum Sector {
-        COMMERCIAL,
-        RESIDENTIAL
-    }
-    private static Map<Sector, String> sectorPicklistValues = new Map<Sector, String>{
-        Sector.RESIDENTIAL => 'Residential',
-        Sector.COMMERCIAL  => 'Commercial'
-    };
-
     // Names
     public static final String DEFAULT_COMPANY_NAME     = 'Test INC.';
     public static final String DEFAULT_FIRST_NAME       = 'DefaultFirstName';
@@ -29,7 +19,7 @@ public with sharing class KJ_Tool_TestDataFactory {
     public static final String DEFAULT_WEBSITE          = 'sample.com';
 
     // Address
-    public static final String DEFAULT_BRANCH_TERRITORY = 'NWA';
+    public static final String DEFAULT_BRANCH_TERRITORY = KJ_Model_Picklist.mapToString(KJ_Model_Picklist.Territory.NWA);
     public static final String DEFAULT_STREET           = '123 Apple St';
     public static final String DEFAULT_CITY             = 'Bentonville';
     public static final String DEFAULT_STATE            = 'AR';
@@ -41,8 +31,8 @@ public with sharing class KJ_Tool_TestDataFactory {
     public static final Datetime DEFAULT_DATETIME       = Datetime.valueOf('2026-01-01 08:00:00');
 
     // Picklist Values
-    public static final Sector DEFAULT_SECTOR           = Sector.COMMERCIAL;
-    public static final String DEFAULT_ACCOUNT_STATUS   = 'Lead';
+    public static final KJ_Model_Picklist.Sector DEFAULT_SECTOR = KJ_Model_Picklist.Sector.COMMERCIAL;
+    public static final String DEFAULT_ACCOUNT_STATUS   = KJ_Model_Picklist.mapToString(KJ_Model_Picklist.AccountStatus.LEAD);
 
     // Misc. Strings
     public static final String DEFAULT_NOTES            = 'Here is a generic note sample: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ultricies tincidunt arcu in tempor. Vivamus in volutpat magna. Vivamus non arcu rutrum, blandit est sit amet, placerat odio. Donec elementum at erat vitae pharetra. Nulla tristique ligula arcu, vitae posuere nibh lobortis nec. Curabitur at magna in turpis elementum commodo ut sit amet lectus. Fusce sit amet velit et tellus fringilla hendrerit sed eu erat. Phasellus ac elementum tellus. Nullam sit amet aliquam sem, lobortis scelerisque magna. Phasellus condimentum elementum eros, ut porta orci faucibus vel. Proin efficitur purus vel tristique ultrices. Mauris et volutpat lacus. Donec et egestas sapien. Phasellus porttitor nunc a vulputate porttitor. Aliquam tincidunt, ante id egestas pharetra, tellus lorem tincidunt ligula, et auctor nisl nisi vel turpis.';
@@ -51,9 +41,9 @@ public with sharing class KJ_Tool_TestDataFactory {
 
     // -- Object Creation Methods ------------------------------------------------------------------
     // Leads 
-    public static Lead createTestLead(Sector sectorArg){
+    public static Lead createTestLead(KJ_Model_Picklist.Sector sectorArg){
         String newCompanyName;
-        if(sectorArg == Sector.COMMERCIAL){
+        if(sectorArg == KJ_Model_Picklist.Sector.COMMERCIAL){
             newCompanyName = DEFAULT_COMPANY_NAME;
         } else {
             newCompanyName = '[Residential]';
@@ -62,14 +52,14 @@ public with sharing class KJ_Tool_TestDataFactory {
             Company                         = newCompanyName,
             FirstName                       = DEFAULT_FIRST_NAME, 
             LastName                        = DEFAULT_LAST_NAME, 
-            Sector__c                       = sectorPicklistValues.Get(sectorArg),
+            Sector__c                       = KJ_Model_Picklist.mapToString(sectorArg),
             Service_Type__c                 = 'Repair',
             Lead_Notes__c                   = 'Test Lead Notes',
 
             Contact_Role__c                 = 'TestLead Contact Role sample here',
             Phone                           = DEFAULT_PHONE,
             Email                           = DEFAULT_EMAIL,
-            Contact_Method_Preference__c    = 'Phone',
+            Contact_Method_Preference__c    = KJ_Model_Picklist.mapToString(KJ_Model_Picklist.ContactMethod.PHONE),
 
             Job_Project_Priority_Level__c   = 'Medium',
             Units_To_Service__c             = 1,
@@ -96,9 +86,9 @@ public with sharing class KJ_Tool_TestDataFactory {
 
 
     // Accounts
-    public static Account createTestAccount(Sector sectorArg, Id parentIdArg, Id accountPrimaryContactIdArg, Id originatingLeadIdArg){
+    public static Account createTestAccount(KJ_Model_Picklist.Sector sectorArg, Id parentIdArg, Id accountPrimaryContactIdArg, Id originatingLeadIdArg){
         String newIndustry, newWebsite; Integer newNumberOfEmployees;
-        if(sectorArg == Sector.COMMERCIAL){
+        if(sectorArg == KJ_Model_Picklist.Sector.COMMERCIAL){
             newIndustry             = 'Sample of Industry';
             newWebsite              = 'SampleWebsite.com';
             newNumberOfEmployees    = 99;
@@ -112,7 +102,7 @@ public with sharing class KJ_Tool_TestDataFactory {
             Name                        = 'Test Account - ' + Math.round(Math.random() * 100000000),
             ParentId                    = parentIdArg,
             Account_Primary_Contact__c  = accountPrimaryContactIdArg,
-            Account_Sector__c           = sectorPicklistValues.Get(sectorArg),
+            Account_Sector__c           = KJ_Model_Picklist.mapToString(sectorArg),
             Account_Status__c           = DEFAULT_ACCOUNT_STATUS,
             Office_Notes__c             = DEFAULT_NOTES,
             Field_Notes__c              = DEFAULT_NOTES,
@@ -143,10 +133,10 @@ public with sharing class KJ_Tool_TestDataFactory {
 
 
     // Contacts
-    public static Contact createTestContact(Sector sectorArg, Id accountIdArg){
+    public static Contact createTestContact(KJ_Model_Picklist.Sector sectorArg, Id accountIdArg){
         String newTitle, newDepartment;
 
-        if(sectorArg == Sector.COMMERCIAL){
+        if(sectorArg == KJ_Model_Picklist.Sector.COMMERCIAL){
             newTitle        = 'Commercial Contact Title';
             newDepartment   = 'Sample Department';
         } else {
@@ -160,13 +150,13 @@ public with sharing class KJ_Tool_TestDataFactory {
             LastName                        = DEFAULT_LAST_NAME, 
             Role__c                         = 'TestContact Role',
             AccountId                       = accountIdArg,
-            Contact_Sector__c               = sectorPicklistValues.Get(sectorArg),
+            Contact_Sector__c               = KJ_Model_Picklist.mapToString(sectorArg),
             Contact_Notes__c                = DEFAULT_NOTES,
 
             Title                           = newTitle,
             Department                      = newDepartment,
 
-            Contact_Method_Preference__c    = 'Email',
+            Contact_Method_Preference__c    = KJ_Model_Picklist.mapToString(KJ_Model_Picklist.ContactMethod.EMAIL),
             Phone                           = DEFAULT_PHONE,
             Email                           = DEFAULT_EMAIL,
 
@@ -177,14 +167,14 @@ public with sharing class KJ_Tool_TestDataFactory {
             MailingPostalCode               = DEFAULT_POSTAL_CODE
         );
 
-        Return newContact;
+        return newContact;
     }
     public static Contact createTestContact(){
         return createTestContact(DEFAULT_SECTOR, null);
     }
 
     // Projects
-    public static Project__c createTestProject(Sector sectorArg, Id parentAccountArg, Id primaryContactArg, Id orginatingLeadArg, Id customerPropertyArg){
+    public static Project__c createTestProject(KJ_Model_Picklist.Sector sectorArg, Id parentAccountArg, Id primaryContactArg, Id originatingLeadArg, Id customerPropertyArg){
         Project__c newProject = new Project__c(
             Project_Name__c             = 'TestProject Name',
             Project_Status__c           = 'New',
@@ -196,10 +186,10 @@ public with sharing class KJ_Tool_TestDataFactory {
             Project_Notes__c            = DEFAULT_NOTES,
             Job_Notes__c                = DEFAULT_NOTES,
 
-            Sector__c                   = sectorPicklistValues.get(sectorArg),
+            Sector__c                   = KJ_Model_Picklist.mapToString(sectorArg),
             Service_Type__c             = 'Repair',
 
-            Originating_Lead__c         = orginatingLeadArg,
+            Originating_Lead__c         = originatingLeadArg,
 
             Branch_Territory__c         = DEFAULT_BRANCH_TERRITORY,
             Units_To_Service__c         = 1,
@@ -217,7 +207,7 @@ public with sharing class KJ_Tool_TestDataFactory {
     }
 
     // Jobs
-    public static Job__c createTestJob(Sector sectorArg, Id parentProjectArg, Id parentAccountArg, Id primaryContactArg, Id customerPropertyArg){
+    public static Job__c createTestJob(KJ_Model_Picklist.Sector sectorArg, Id parentProjectArg, Id parentAccountArg, Id primaryContactArg, Id customerPropertyArg){
         Job__c newJob = new Job__c(
             Job_Status__c           = 'Needs Scheduling',
             Priority_Level__c       = 'Medium',
@@ -227,7 +217,7 @@ public with sharing class KJ_Tool_TestDataFactory {
             Office_Notes__c         = DEFAULT_NOTES,
             Field_Notes__c          = DEFAULT_NOTES,
 
-            Job_Sector__c           = sectorPicklistValues.get(sectorArg),
+            Job_Sector__c           = KJ_Model_Picklist.mapToString(sectorArg),
             Service_Type__c         = 'Repair',
 
             Customer_Property__c    = customerPropertyArg,
@@ -249,7 +239,7 @@ public with sharing class KJ_Tool_TestDataFactory {
     }
 
     // Customer Properties
-    public static Customer_Property__c createTestCustomerProperty(Sector sectorArg, Id PropertyOwnerAccountArg){
+    public static Customer_Property__c createTestCustomerProperty(KJ_Model_Picklist.Sector sectorArg, Id PropertyOwnerAccountArg){
         Customer_Property__c newCustomerProperty = new Customer_Property__c(
             Name                                = 'Customer Property Sample Name',
 
@@ -260,7 +250,7 @@ public with sharing class KJ_Tool_TestDataFactory {
             Property_Address__PostalCode__s     = DEFAULT_POSTAL_CODE,
 
             Property_Owner_Account__c   = PropertyOwnerAccountArg,
-            Property_Sector__c          = sectorPicklistValues.get(sectorArg),
+            Property_Sector__c          = KJ_Model_Picklist.mapToString(sectorArg),
             Property_Notes__c           = DEFAULT_NOTES,
             
             Square_Footage__c           = 1500
