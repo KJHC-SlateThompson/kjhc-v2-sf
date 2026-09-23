@@ -33,6 +33,13 @@ public with sharing class KJ_Dispatch_Account {
         return pkg;
     }
 
+    public static KJ_Tool_Package archive(KJ_Tool_Package pkg){
+        KJ_Engine_Account.archive(pkg);
+        
+        finalize(pkg);
+        return pkg;
+    }
+
     private static void route(KJ_Tool_Package pkg){
         if (pkg.triggerContext == null) {
             KJ_Engine_Account.summarize(pkg);

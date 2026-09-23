@@ -239,9 +239,6 @@ public with sharing class KJ_Model_Account {
         if(targetValue != null) { targetRecord.put(targetField, targetValue); }
     }
 
-    // Reading a field the caller never queried throws an SObjectException, so build() works off the
-    // populated-field map rather than the record. An absent field reads as null and falls through to
-    // whatever the constructor already set.
     private static Object read(Map<String, Object> sourceFields, SObjectField targetField){
         return sourceFields.get(String.valueOf(targetField));
     }
