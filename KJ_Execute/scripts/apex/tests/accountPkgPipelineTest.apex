@@ -22,12 +22,12 @@ KJ_Tool_Package pkg = KJ_Tool_Package.build(
 ).withLabel('Account Package');
 
 // Sends package to controller
-KJ_Dispatch_AccountController.receive(pkg);
+KJ_Dispatch_Account.receive(pkg);
 
 KJ_Tool_Logger.debug('Account : ' + model.name);
 KJ_Tool_Logger.debug('Success : ' + pkg.result.isSuccess);
 KJ_Tool_Logger.debug('Message : ' + pkg.result.message);
 
 // Empty bundle should report MISSING_DATA, not a routing failure.
-KJ_Tool_Package empty = KJ_Dispatch_AccountController.receive(KJ_Tool_Package.build());
+KJ_Tool_Package empty = KJ_Dispatch_Account.receive(KJ_Tool_Package.build());
 KJ_Tool_Logger.debug('Empty   : ' + empty.result.exceptions[0].code);

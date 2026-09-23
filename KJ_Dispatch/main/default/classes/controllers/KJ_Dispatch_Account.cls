@@ -1,13 +1,13 @@
 /* 
-*   File: KJ_Dispatch_AccountController.cls
+*   File: KJ_Dispatch_Account.cls
 *   Authors: Slate Thompson (Slate@kintyjones.com)
 *   Created: 7/22/2026
 *   Description: This class is built to control operations related to the Account object
 
 */
-public with sharing class KJ_Dispatch_AccountController {
+public with sharing class KJ_Dispatch_Account {
     //*-- Constants -------------------------------------------------------------------------------
-    private static final String CONTROLLER_NAME = 'KJ_Dispatch_AccountController';
+    private static final String CONTROLLER_NAME = 'KJ_Dispatch_Account';
 
     //*-- Static Methods --------------------------------------------------------------------------
     public static KJ_Tool_Package receive(KJ_Tool_Package pkg){

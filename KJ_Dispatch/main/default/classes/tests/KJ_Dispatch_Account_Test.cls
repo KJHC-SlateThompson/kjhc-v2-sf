@@ -1,11 +1,11 @@
 /* 
-*   File: KJ_Dispatch_AccountController_Test.cls
+*   File: KJ_Dispatch_Account_Test.cls
 *   Authors: Slate Thompson (Slate@kintyjones.com)
 *   Created: 9/22/2026
 *   Description: This class tests the routing of the Account controller
 */
 @isTest
-public with sharing class KJ_Dispatch_AccountController_Test {
+public with sharing class KJ_Dispatch_Account_Test {
 
     // No trigger context, so route() calls summarize. Builds the model off an unsaved record.
     @isTest
@@ -15,7 +15,7 @@ public with sharing class KJ_Dispatch_AccountController_Test {
             KJ_Tool_DataEntry.build(model).withLabel('Account')
         );
 
-        KJ_Tool_Package pkg = KJ_Dispatch_AccountController.receive(KJ_Tool_Package.build(bundle));
+        KJ_Tool_Package pkg = KJ_Dispatch_Account.receive(KJ_Tool_Package.build(bundle));
 
         Assert.isTrue(pkg.result.isSuccess);
         Assert.isTrue(String.isNotBlank(pkg.result.message));
@@ -24,7 +24,7 @@ public with sharing class KJ_Dispatch_AccountController_Test {
     // Routed correctly, but the bundle is empty. Distinct from a routing failure.
     @isTest
     static void receive_MissingBundleEntry_FailPath(){
-        KJ_Tool_Package pkg = KJ_Dispatch_AccountController.receive(KJ_Tool_Package.build());
+        KJ_Tool_Package pkg = KJ_Dispatch_Account.receive(KJ_Tool_Package.build());
 
         Assert.isFalse(pkg.result.isSuccess);
         Assert.areEqual(KJ_Tool_Exception.Code.MISSING_DATA, pkg.result.exceptions[0].code);
@@ -34,7 +34,7 @@ public with sharing class KJ_Dispatch_AccountController_Test {
     // flag is false, so no engine method fires -- this asserts route() handles it cleanly.
     @isTest
     static void receive_TriggerContext_HappyPath(){
-        KJ_Tool_Package pkg = KJ_Dispatch_AccountController.receive(
+        KJ_Tool_Package pkg = KJ_Dispatch_Account.receive(
             KJ_Tool_Package.build().withTriggerContext(new KJ_Tool_TriggerContext())
         );
 
@@ -44,7 +44,7 @@ public with sharing class KJ_Dispatch_AccountController_Test {
 
     @isTest
     static void receive_NullPackage_FailPath(){
-        KJ_Tool_Package pkg = KJ_Dispatch_AccountController.receive(null);
+        KJ_Tool_Package pkg = KJ_Dispatch_Account.receive(null);
 
         Assert.isNotNull(pkg);
         Assert.isFalse(pkg.result.isSuccess);
@@ -59,7 +59,7 @@ public with sharing class KJ_Dispatch_AccountController_Test {
             KJ_Tool_DataEntry.build('not a model').withLabel('Account')
         );
 
-        KJ_Tool_Package pkg = KJ_Dispatch_AccountController.receive(KJ_Tool_Package.build(bundle));
+        KJ_Tool_Package pkg = KJ_Dispatch_Account.receive(KJ_Tool_Package.build(bundle));
 
         Assert.isFalse(pkg.result.isSuccess);
         Assert.areEqual(KJ_Tool_Exception.Code.ROUTING_ERROR, pkg.result.exceptions[0].code);
