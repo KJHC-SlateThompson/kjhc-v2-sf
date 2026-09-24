@@ -3,6 +3,13 @@
 *   Authors: Slate Thompson (Slate@kintyjones.com)
 *   Created: 5/22/2026
 *   Description: This class structures the standard unit used for passing information around including data, context, and results.
+*
+*   Index:
+*       Member Variables            public get; private set
+*       Member Methods              public
+*           Constructor & Factories
+*           Setters
+*           Helpers
 */
 public with sharing class KJ_Tool_Package {
     //*-- Member Variables ------------------------------------------------------------------------
@@ -17,6 +24,7 @@ public with sharing class KJ_Tool_Package {
     public KJ_Tool_TriggerContext  triggerContext { get; private set; }
 
     //*-- Member Methods --------------------------------------------------------------------------
+    // Constructor
     public KJ_Tool_Package() {
         this.label          = '';
         this.dataBundle     = new KJ_Tool_DataBundle();
@@ -28,8 +36,9 @@ public with sharing class KJ_Tool_Package {
         this.userContext    = null;
         this.triggerContext = null;
     }
+    
  
- 
+    // Factories
     public static KJ_Tool_Package build(KJ_Tool_DataBundle initDataBundle){
         KJ_Tool_Package newPackage = new KJ_Tool_Package();
         newPackage.dataBundle = initDataBundle ?? newPackage.dataBundle;
@@ -53,6 +62,7 @@ public with sharing class KJ_Tool_Package {
                                 .withTriggerContext(KJ_Tool_TriggerContext.build());
     }
 
+    // Setters
     public KJ_Tool_Package withLabel(String initLabel){
         this.label = initLabel ?? this.label;
         return this;
@@ -77,4 +87,21 @@ public with sharing class KJ_Tool_Package {
         this.triggerContext = initTriggerContext ?? this.triggerContext;
         return this;
     }
+
+    //helpers
+    public static KJ_Tool_Package nullCheck(KJ_Tool_Package pkg){
+        if(pkg == null){
+            KJ_Tool_Package empty = KJ_Tool_Package.build();
+
+            KJ_Tool_Exception newException = KJ_Tool_Exception.fatal(
+                KJ_Tool_Exception.Code.INVALID_CONTEXT,
+                'Somewhere a null package was detected by a null check. This is the stand-in package to replace it.'
+            );
+            empty.result.addException(newException);
+
+            pkg = empty;
+        }
+        return pkg;
+    }
+
 }

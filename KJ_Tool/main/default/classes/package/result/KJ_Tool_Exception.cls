@@ -3,6 +3,11 @@
 *   Authors: Slate Thompson (Slate@kintyjones.com)
 *   Created: 4/13/2026
 *   Description: This class acts as the base layer to describe an exception within the framework
+*
+*   Index:
+*       Constants                   public
+*       Member Variables            public get; private set
+*       Member Methods              public
 */
 
 public with sharing class KJ_Tool_Exception extends Exception{
@@ -11,6 +16,7 @@ public with sharing class KJ_Tool_Exception extends Exception{
         ROUTING_ERROR, // Used if controller fails to route package. Typically appended to pkg.result.exceptions.
         INVALID_CONTEXT, // Used if a controller is invoked without the context its routing requires.
         MISSING_DATA, // Used if the dataBundle lacks what the engine needs to do its work.
+        OPERATION_ERROR, // Used if an engine operation throws while doing its work (e.g. a failed DML).
         DEFAULT_CODE,
         TEST_EXCEPTION
     }

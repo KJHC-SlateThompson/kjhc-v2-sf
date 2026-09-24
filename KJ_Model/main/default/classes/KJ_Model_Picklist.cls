@@ -3,6 +3,13 @@
 *   Authors: Slate Thompson (Slate@kintyjones.com)
 *   Created: 9/2/2026
 *   Description: This class provides a proxy for picklist values via enums, and methods for mapping and stringification.
+*
+*   Index:
+*       Sector                      public
+*       Territory                   public
+*       Record Origin               public
+*       Account Status              public
+*       Contact Method              public
 */
 
 public with sharing class KJ_Model_Picklist {
@@ -50,7 +57,7 @@ public with sharing class KJ_Model_Picklist {
         }
     }
 
-    //*-- Record Origin --------------------------------------------------------------------------
+    //*-- Record Origin ---------------------------------------------------------------------------
     public enum RecordOrigin {
         FIELDPULSE,
         QBO,
@@ -81,8 +88,7 @@ public with sharing class KJ_Model_Picklist {
         }
     }
     
-
-    //*-- Account Status ---------------------------------------------------------------------------
+    //*-- Account Status --------------------------------------------------------------------------
     public enum AccountStatus { 
         UNKNOWN,
         LEAD,

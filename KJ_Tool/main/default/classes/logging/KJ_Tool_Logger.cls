@@ -3,6 +3,9 @@
 *   Authors: Slate Thompson (Slate@kintyjones.com)
 *   Created: 4/1/2026
 *   Description: This class is built to allow for easy logging to terminal from other classes
+*
+*   Index:
+*       Member Methods              public
 */
 public with sharing class KJ_Tool_Logger {
     //*-- Member Methods --------------------------------------------------------------------------

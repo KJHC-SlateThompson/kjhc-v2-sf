@@ -3,7 +3,11 @@
 *   Authors: Slate Thompson (Slate@kintyjones.com)
 *   Created: 4/20/2026
 *   Description: This class is built to structure and hold data about the currently Salesforce org
-
+*
+*   Index:
+*       Constants                   public
+*       Member Variables            public get; private set
+*       Member Methods              public
 */
 public with sharing class KJ_Tool_OrgContext {
     //*-- Constants -------------------------------------------------------------------------------

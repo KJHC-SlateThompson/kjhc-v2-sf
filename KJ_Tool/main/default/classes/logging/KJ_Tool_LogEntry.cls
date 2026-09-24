@@ -3,7 +3,11 @@
 *   Authors: Slate Thompson (Slate@kintyjones.com)
 *   Created: 4/1/2026
 *   Description: This class is built to structure the data of log entries
-
+*
+*   Index:
+*       Constants                   public
+*       Member Variables            public get; private set
+*       Member Functions            public
 */
 public with sharing class KJ_Tool_LogEntry {
     //*-- Constants -------------------------------------------------------------------------------

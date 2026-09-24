@@ -8,6 +8,18 @@
 public with sharing class KJ_Engine_Account {
 
 
+    //*-- Static Methods --------------------------------------------------------------------------
+    // Triggered methods
+    public static void onBeforeInsert(KJ_Tool_Package pkg){}
+    public static void onBeforeUpdate(KJ_Tool_Package pkg){}
+    public static void onBeforeDelete(KJ_Tool_Package pkg){}
+
+    public static void onAfterInsert(KJ_Tool_Package pkg){}
+    public static void onAfterUpdate(KJ_Tool_Package pkg){}
+    public static void onAfterDelete(KJ_Tool_Package pkg){}
+    public static void onAfterUndelete(KJ_Tool_Package pkg){}
+    
+
     public static KJ_Tool_Package archive(KJ_Tool_Package pkg){
         List<KJ_Model_Account> accounts = new List<KJ_Model_Account>();
 
@@ -17,7 +29,7 @@ public with sharing class KJ_Engine_Account {
                     KJ_Tool_Exception.Code.MISSING_DATA,
                     'archive received a non-Account entry: ' + entry.label
                 );
-                pkg.result.addEception();
+                pkg.result.addException(newException);
 
                 return pkg;
             }
@@ -33,7 +45,12 @@ public with sharing class KJ_Engine_Account {
             return pkg;
         }
 
-        
+        List<Account> toUpdate = new List<Account>();
+        for(KJ_Model_Account account : accounts){
+            account.setArchived(True);
+            toUpdate.add(account.toRecord());
+        }
+        update toUpdate;
 
         return pkg;
     }

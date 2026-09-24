@@ -3,7 +3,11 @@
 *   Authors: Slate Thompson (Slate@kintyjones.com)
 *   Created: 4/13/2026
 *   Description: This class acts as the base layer to describe the origin of an entity within the system
-
+*
+*   Index:
+*       Constants                   public
+*       Member Variables            public get; private set
+*       Member Methods              public + private    (private: build)
 */
 public with sharing class KJ_Tool_Origin {
     //*-- Constants -------------------------------------------------------------------------------

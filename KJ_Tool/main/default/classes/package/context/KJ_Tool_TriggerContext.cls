@@ -3,7 +3,10 @@
 *   Authors: Slate Thompson (Slate@kintyjones.com)
 *   Created: 4/10/2026
 *   Description: This class is built to structure and hold data as to the context of what happened in regards to a trigger
-
+*
+*   Index:
+*       Member Variables            public get; private set
+*       Member Methods              public
 */
 public with sharing class KJ_Tool_TriggerContext {
     //*-- Member Variables ------------------------------------------------------------------------

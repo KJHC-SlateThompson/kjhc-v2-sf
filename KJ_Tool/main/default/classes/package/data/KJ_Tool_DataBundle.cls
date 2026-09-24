@@ -3,6 +3,10 @@
 *   Authors: Slate Thompson (Slate@kintyjones.com)
 *   Created: 5/21/2026
 *   Description: This class bundles together data entries to make them more trackable.
+*
+*   Index:
+*       Member Variables            public get; private set
+*       Member Methods              public
 */
 public with sharing class KJ_Tool_DataBundle {
     //*-- Member Variables ------------------------------------------------------------------------

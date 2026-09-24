@@ -3,6 +3,11 @@
 *   Authors: Slate Thompson (Slate@kintyjones.com)
 *   Created: 5/21/2026
 *   Description: This class structures the lowest unit of data within the codebase
+*
+*   Index:
+*       Constants                   public
+*       Member Variables            public get; private set
+*       Member Methods              public
 */
 public with sharing class KJ_Tool_DataEntry {
     //*-- Constants -------------------------------------------------------------------------------

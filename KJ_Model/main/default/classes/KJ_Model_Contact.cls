@@ -3,13 +3,28 @@
 *   Authors: Slate Thompson (Slate@kintyjones.com)
 *   Created: 9/2/2026
 *   Description: This class is built to act as a code interface for the Contact object
+*
+*   Index:
+*       Constants
+*           Field Groupings         public
+*           Type Defaults           private
+*           Object Reference        public
+*       Member Variables            public get; private set
+*       Static Methods
+*           Factories               public
+*           Static Field Ops        public
+*           Internal                private     (put, read, readParentName)
+*       Instance Methods
+*           Constructor             public
+*           Conversion              public
+*           Setters                 public
 */
 
 public with sharing class KJ_Model_Contact {
 
-    //*-- 1. Constants -----------------------------------------------------------------------------
+    //*-- Constants -------------------------------------------------------------------------------
 
-    //*--    1.1 Field Groupings -------------------------------------------------------------------
+    //*--    Field Groupings ----------------------------------------------------------------------
     public static final List<SObjectField> VITAL_DATA = new List<SObjectField>{
         Contact.Id,
         Contact.FirstName,
@@ -55,7 +70,7 @@ public with sharing class KJ_Model_Contact {
         'Account.Name'
     };
 
-    //*--    1.2 Type Defaults ---------------------------------------------------------------------
+    //*--    Type Defaults ------------------------------------------------------------------------
     private static final String                               DEFAULT_TEXT                      = null;
     private static final Decimal                              DEFAULT_NUMBER                    = null;
     private static final Date                                 DEFAULT_DATE                      = null;
@@ -65,12 +80,12 @@ public with sharing class KJ_Model_Contact {
     private static final KJ_Model_Picklist.ContactMethod      DEFAULT_CONTACT_METHOD_PREFERENCE = KJ_Model_Picklist.ContactMethod.UNKNOWN;
     private static final KJ_Model_Picklist.RecordOrigin       DEFAULT_ORIGIN                    = KJ_Model_Picklist.RecordOrigin.UNKNOWN;
 
-    //*--    1.3 Object Reference ------------------------------------------------------------------
+    //*--    Object Reference ---------------------------------------------------------------------
     // Statically records the SObject type of the object modeled by the class
     public static final SObjectType SOBJECT_TYPE = Contact.SObjectType;
 
 
-    //*-- 2. Member Variables ----------------------------------------------------------------------
+    //*-- Member Variables ------------------------------------------------------------------------
 
     // Record
     public Id                               recordId                    { get; private set; }
@@ -112,9 +127,9 @@ public with sharing class KJ_Model_Contact {
     public Date                             originCreatedDate           { get; private set; }
 
 
-    //*-- 3. Static Methods ------------------------------------------------------------------------
+    //*-- Static Methods --------------------------------------------------------------------------
 
-    //*--    3.1 Factories -------------------------------------------------------------------------
+    //*--    Factories ----------------------------------------------------------------------------
     public static KJ_Model_Contact build(Contact initRecord){
         KJ_Model_Contact newModel = new KJ_Model_Contact();
         if(initRecord == null) { return newModel; }
@@ -189,7 +204,7 @@ public with sharing class KJ_Model_Contact {
         return newModels;
     }
 
-    //*--    3.2 Static Field Ops ------------------------------------------------------------------
+    //*--    Static Field Ops ---------------------------------------------------------------------
     public static List<SObjectField> getFields(){
         List<SObjectField> allFields = new List<SObjectField>();
         allFields.addAll(VITAL_DATA);
@@ -201,7 +216,7 @@ public with sharing class KJ_Model_Contact {
         return allFields;
     }
 
-    //*--    3.3 Internal --------------------------------------------------------------------------
+    //*--    Internal -----------------------------------------------------------------------------
     private static void put(Contact targetRecord, SObjectField targetField, Object targetValue){
         if(targetValue != null) { targetRecord.put(targetField, targetValue); }
     }
@@ -223,9 +238,9 @@ public with sharing class KJ_Model_Contact {
     }
 
 
-    //*-- 4. Instance Methods ----------------------------------------------------------------------
+    //*-- Instance Methods ------------------------------------------------------------------------
 
-    //*--    4.1 Constructor -----------------------------------------------------------------------
+    //*--    Constructor --------------------------------------------------------------------------
     public KJ_Model_Contact() {
         // Record
         this.recordId                = null;
@@ -267,7 +282,7 @@ public with sharing class KJ_Model_Contact {
         this.originCreatedDate       = DEFAULT_DATE;
     }
 
-    //*--    4.2 Conversion ------------------------------------------------------------------------
+    //*--    Conversion ---------------------------------------------------------------------------
     public Contact toRecord(){
         Contact newRecord = new Contact();
 
@@ -311,7 +326,7 @@ public with sharing class KJ_Model_Contact {
         return newRecord;
     }
 
-    //*--    4.3 Setters ---------------------------------------------------------------------------
+    //*--    Setters ------------------------------------------------------------------------------
     // Record
     public KJ_Model_Contact setRecordId(Id initRecordId){
         this.recordId = initRecordId ?? this.recordId;

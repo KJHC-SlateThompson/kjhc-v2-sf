@@ -1,4 +1,4 @@
-/* 
+/*
 *   File: KJ_Dispatch_Account_Test.cls
 *   Authors: Slate Thompson (Slate@kintyjones.com)
 *   Created: 9/22/2026
@@ -7,9 +7,9 @@
 @isTest
 public with sharing class KJ_Dispatch_Account_Test {
 
-    // No trigger context, so route() calls summarize. Builds the model off an unsaved record.
+    // receive() is trigger-only, so a package with data but no trigger context is rejected.
     @isTest
-    static void receive_NoTriggerContext_Summarizes(){
+    static void receive_NoTriggerContext_FailPath(){
         KJ_Model_Account model = KJ_Model_Account.build(KJ_Tool_TestDataFactory.createTestAccount());
         KJ_Tool_DataBundle bundle = KJ_Tool_DataBundle.build(
             KJ_Tool_DataEntry.build(model).withLabel('Account')
@@ -17,14 +17,14 @@ public with sharing class KJ_Dispatch_Account_Test {
 
         KJ_Tool_Package pkg = KJ_Dispatch_Account.receive(KJ_Tool_Package.build(bundle));
 
-        Assert.isTrue(pkg.result.isSuccess);
-        Assert.isTrue(String.isNotBlank(pkg.result.message));
+        Assert.isFalse(pkg.result.isSuccess);
+        Assert.areEqual(KJ_Tool_Exception.Code.INVALID_CONTEXT, pkg.result.exceptions[0].code);
     }
 
-    // Routed correctly, but the bundle is empty. Distinct from a routing failure.
+    // Reached the engine, but the bundle is empty. Distinct from a context failure.
     @isTest
-    static void receive_MissingBundleEntry_FailPath(){
-        KJ_Tool_Package pkg = KJ_Dispatch_Account.receive(KJ_Tool_Package.build());
+    static void archive_MissingBundleEntry_FailPath(){
+        KJ_Tool_Package pkg = KJ_Dispatch_Account.archive(KJ_Tool_Package.build());
 
         Assert.isFalse(pkg.result.isSuccess);
         Assert.areEqual(KJ_Tool_Exception.Code.MISSING_DATA, pkg.result.exceptions[0].code);
@@ -49,20 +49,6 @@ public with sharing class KJ_Dispatch_Account_Test {
         Assert.isNotNull(pkg);
         Assert.isFalse(pkg.result.isSuccess);
         Assert.areEqual(KJ_Tool_Exception.Code.INVALID_CONTEXT, pkg.result.exceptions[0].code);
-    }
-
-    // An 'Account' entry holding something that is not a KJ_Model_Account makes summarize throw on
-    // the cast, which proves receive()'s catch wraps anything route() blows up on.
-    @isTest
-    static void receive_RouteThrows_FailPath(){
-        KJ_Tool_DataBundle bundle = KJ_Tool_DataBundle.build(
-            KJ_Tool_DataEntry.build('not a model').withLabel('Account')
-        );
-
-        KJ_Tool_Package pkg = KJ_Dispatch_Account.receive(KJ_Tool_Package.build(bundle));
-
-        Assert.isFalse(pkg.result.isSuccess);
-        Assert.areEqual(KJ_Tool_Exception.Code.ROUTING_ERROR, pkg.result.exceptions[0].code);
     }
 
     // The real path end to end: DML on Account fires KJ_Dispatch_AccountTrigger, which builds a

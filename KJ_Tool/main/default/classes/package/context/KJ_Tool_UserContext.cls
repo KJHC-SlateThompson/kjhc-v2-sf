@@ -3,7 +3,10 @@
 *   Authors: Slate Thompson (Slate@kintyjones.com)
 *   Created: 4/20/2026
 *   Description: This class is built to structure and hold data about the currently running user
-
+*
+*   Index:
+*       Member Variables            public get; private set
+*       Member Methods              public
 */
 public with sharing class KJ_Tool_UserContext {
     //*-- Member Variables ------------------------------------------------------------------------

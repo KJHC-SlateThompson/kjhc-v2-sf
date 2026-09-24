@@ -3,7 +3,10 @@
 *   Authors: Slate Thompson (Slate@kintyjones.com)
 *   Created: 7/22/2026
 *   Description: This class is built to control operations related to the Account object
-
+*
+*   Index:
+*       Constants                   private
+*       Static Methods              public + private    (private: route)
 */
 public with sharing class KJ_Dispatch_Account {
     //*-- Constants -------------------------------------------------------------------------------
@@ -11,15 +14,8 @@ public with sharing class KJ_Dispatch_Account {
 
     //*-- Static Methods --------------------------------------------------------------------------
     public static KJ_Tool_Package receive(KJ_Tool_Package pkg){
-        if (pkg == null) {
-            KJ_Tool_Package empty = KJ_Tool_Package.build();
-            empty.result.addException(KJ_Tool_Exception.fatal(
-                KJ_Tool_Exception.Code.INVALID_CONTEXT,
-                CONTROLLER_NAME + ' received a null package.'
-            ));
-            finalize(empty);
-            return empty;
-        }
+        // null check
+        if(pkg !== (pkg = KJ_Tool_Package.nullCheck(pkg))) { return pkg; }
 
         try{
             route(pkg);
@@ -29,20 +25,35 @@ public with sharing class KJ_Dispatch_Account {
                 KJ_Tool_Exception.fatal(e, KJ_Tool_Exception.Code.ROUTING_ERROR)
             );
         }
-        finalize(pkg);
+
         return pkg;
     }
 
     public static KJ_Tool_Package archive(KJ_Tool_Package pkg){
-        KJ_Engine_Account.archive(pkg);
-        
-        finalize(pkg);
+        // null check
+        if(pkg !== (pkg = KJ_Tool_Package.nullCheck(pkg))) { return pkg; }
+
+        try{
+            KJ_Engine_Account.archive(pkg);
+        }
+        catch (Exception e) {
+            pkg.result.addException(
+                KJ_Tool_Exception.fatal(e, KJ_Tool_Exception.Code.OPERATION_ERROR)
+            );
+        }
+
         return pkg;
     }
 
+    // Internal/Private methods 
     private static void route(KJ_Tool_Package pkg){
         if (pkg.triggerContext == null) {
-            KJ_Engine_Account.summarize(pkg);
+            KJ_Tool_Exception newException = KJ_Tool_Exception.fatal(
+                KJ_Tool_Exception.Code.INVALID_CONTEXT,
+                CONTROLLER_NAME + ' received a package with no trigger context.'
+            );
+            pkg.result.addException(newException);
+
             return;
         }
 
@@ -58,17 +69,6 @@ public with sharing class KJ_Dispatch_Account {
             if (ctx.isUpdate)   { KJ_Engine_Account.onAfterUpdate(pkg); }
             if (ctx.isDelete)   { KJ_Engine_Account.onAfterDelete(pkg); }
             if (ctx.isUndelete) { KJ_Engine_Account.onAfterUndelete(pkg); }
-        }
-    }
-
-    private static void finalize(KJ_Tool_Package pkg){
-        if(pkg.result.isSuccess) { return; }
-
-        for(KJ_Tool_Exception e : pkg.result.exceptions){
-            switch on e.level{
-                when FATAL  { KJ_Tool_Logger.error(e); }
-                when else   { KJ_Tool_Logger.warn(e); }
-            }
         }
     }
 }

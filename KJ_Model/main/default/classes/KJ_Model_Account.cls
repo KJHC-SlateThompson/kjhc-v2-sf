@@ -3,13 +3,28 @@
 *   Authors: Slate Thompson (Slate@kintyjones.com)
 *   Created: 8/15/2026
 *   Description: This class is built to act as a code interface for the Account object
+*
+*   Index:
+*       Constants
+*           Field Groupings         public
+*           Type Defaults           private
+*           Object Reference        public
+*       Member Variables            public get; private set
+*       Static Methods
+*           Factories               public
+*           Static Field Ops        public
+*           Internal                private     (put, read)
+*       Instance Methods
+*           Constructor             public
+*           Conversion              public
+*           Setters                 public
 */
 
 public with sharing class KJ_Model_Account {
 
-    //*-- 1. Constants -----------------------------------------------------------------------------
+    //*-- Constants -------------------------------------------------------------------------------
 
-    //*--    1.1 Field Groupings -------------------------------------------------------------------
+    //*--    Field Groupings ----------------------------------------------------------------------
     public static final List<SObjectField> VITAL_DATA = new List<SObjectField>{
         Account.Id,
         Account.Name,
@@ -52,6 +67,7 @@ public with sharing class KJ_Model_Account {
         Account.UTM_Content__c
     };
     public static final List<SObjectField> METADATA_DATA = new List<SObjectField>{
+        Account.Archived__c,
         Account.OwnerId,
         Account.CreatedById,
         Account.LastModifiedById,
@@ -62,22 +78,23 @@ public with sharing class KJ_Model_Account {
         Account.QBO_Account_Id__c
     };
 
-    //*--    1.2 Type Defaults ---------------------------------------------------------------------
+    //*--    Type Defaults ------------------------------------------------------------------------
     private static final String                          DEFAULT_TEXT      = null;
     private static final Decimal                         DEFAULT_NUMBER    = null;
     private static final Date                            DEFAULT_DATE      = null;
     private static final Datetime                        DEFAULT_DATETIME  = null;
+    private static final Boolean                         DEFAULT_BOOLEAN   = false;
     private static final KJ_Model_Picklist.AccountStatus DEFAULT_STATUS    = KJ_Model_Picklist.AccountStatus.UNKNOWN;
     private static final KJ_Model_Picklist.Sector        DEFAULT_SECTOR    = KJ_Model_Picklist.Sector.UNKNOWN;
     private static final KJ_Model_Picklist.Territory     DEFAULT_TERRITORY = KJ_Model_Picklist.Territory.UNKNOWN;
     private static final KJ_Model_Picklist.RecordOrigin  DEFAULT_ORIGIN    = KJ_Model_Picklist.RecordOrigin.UNKNOWN;
 
-    //*--    1.3 Object Reference ------------------------------------------------------------------
+    //*--    Object Reference ---------------------------------------------------------------------
     // Statically records the SObject type of the object modeled by the class
     public static final SObjectType SOBJECT_TYPE = Account.SObjectType;
 
 
-    //*-- 2. Member Variables ----------------------------------------------------------------------
+    //*-- Member Variables ------------------------------------------------------------------------
 
     // Vital
     public Id                              recordId            { get; private set; }
@@ -110,7 +127,7 @@ public with sharing class KJ_Model_Account {
     public String                          leadSource          { get; private set; }
     public String                          referredBy          { get; private set; }
     public String                          referredByEmail     { get; private set; }
-    public String                          referredByPhone     { get; private set; }
+    public Decimal                         referredByPhone     { get; private set; }
 
     // Attribution
     public String                          gclid               { get; private set; }
@@ -121,6 +138,7 @@ public with sharing class KJ_Model_Account {
     public String                          utmContent          { get; private set; }
 
     // Metadata
+    public Boolean                         archived            { get; private set; }
     public Id                              ownerId             { get; private set; }
     public Id                              createdById         { get; private set; }
     public Id                              lastModifiedById    { get; private set; }
@@ -131,9 +149,9 @@ public with sharing class KJ_Model_Account {
     public String                          qboAccountId        { get; private set; }
 
 
-    //*-- 3. Static Methods ------------------------------------------------------------------------
+    //*-- Static Methods --------------------------------------------------------------------------
 
-    //*--    3.1 Factories -------------------------------------------------------------------------
+    //*--    Factories ----------------------------------------------------------------------------
     public static KJ_Model_Account build(Account initRecord){
         KJ_Model_Account newModel = new KJ_Model_Account();
         if(initRecord == null) { return newModel; }
@@ -171,7 +189,7 @@ public with sharing class KJ_Model_Account {
         newModel.leadSource          = (String)  read(source, Account.Account_Lead_Source__c)      ?? newModel.leadSource;
         newModel.referredBy          = (String)  read(source, Account.Referred_By__c)              ?? newModel.referredBy;
         newModel.referredByEmail     = (String)  read(source, Account.Referred_By_Email__c)        ?? newModel.referredByEmail;
-        newModel.referredByPhone     = readText(source, Account.Referred_By_Phone__c)              ?? newModel.referredByPhone;
+        newModel.referredByPhone     = (Decimal) read(source, Account.Referred_By_Phone__c)        ?? newModel.referredByPhone;
 
         // Attribution
         newModel.gclid               = (String)  read(source, Account.GCLID__c)                    ?? newModel.gclid;
@@ -182,7 +200,8 @@ public with sharing class KJ_Model_Account {
         newModel.utmContent          = (String)  read(source, Account.UTM_Content__c)              ?? newModel.utmContent;
 
         // Metadata
-        newModel.ownerId             = (Id)      read(source, Account.OwnerId)                     ?? newModel.ownerId;
+        newModel.archived            = (Boolean) read(source, Account.Archived__c)                 ?? newModel.archived;
+        newModel.ownerId            = (Id)      read(source, Account.OwnerId)                     ?? newModel.ownerId;
         newModel.createdById         = (Id)      read(source, Account.CreatedById)                 ?? newModel.createdById;
         newModel.lastModifiedById    = (Id)      read(source, Account.LastModifiedById)            ?? newModel.lastModifiedById;
         newModel.recordOrigin        = KJ_Model_Picklist.mapToRecordOrigin((String) read(source, Account.Record_Origin__c));
@@ -220,7 +239,7 @@ public with sharing class KJ_Model_Account {
         return newModels;
     }
 
-    //*--    3.2 Static Field Ops  --------------------------------------------------------------------
+    //*--    Static Field Ops ---------------------------------------------------------------------
     public static List<SObjectField> getFields(){
         List<SObjectField> allFields = new List<SObjectField>();
         allFields.addAll(VITAL_DATA);
@@ -234,7 +253,7 @@ public with sharing class KJ_Model_Account {
         return allFields;
     }
 
-    //*--    3.3 Internal --------------------------------------------------------------------------
+    //*--    Internal -----------------------------------------------------------------------------
     private static void put(Account targetRecord, SObjectField targetField, Object targetValue){
         if(targetValue != null) { targetRecord.put(targetField, targetValue); }
     }
@@ -243,17 +262,10 @@ public with sharing class KJ_Model_Account {
         return sourceFields.get(String.valueOf(targetField));
     }
 
-    // Referred_By_Phone__c is a Number field in the org, so it reads back as a Decimal while the model
-    // keeps phone numbers as text. Normalizing here avoids a TypeException on a straight (String) cast.
-    private static String readText(Map<String, Object> sourceFields, SObjectField targetField){
-        Object fieldValue = read(sourceFields, targetField);
-        return fieldValue == null ? null : String.valueOf(fieldValue);
-    }
 
+    //*-- Instance Methods ------------------------------------------------------------------------
 
-    //*-- 4. Instance Methods ----------------------------------------------------------------------
-
-    //*--    4.1 Constructor -----------------------------------------------------------------------
+    //*--    Constructor --------------------------------------------------------------------------
     public KJ_Model_Account() {
         // Vital
         this.recordId            = null;
@@ -286,7 +298,7 @@ public with sharing class KJ_Model_Account {
         this.leadSource          = DEFAULT_TEXT;
         this.referredBy          = DEFAULT_TEXT;
         this.referredByEmail     = DEFAULT_TEXT;
-        this.referredByPhone     = DEFAULT_TEXT;
+        this.referredByPhone     = DEFAULT_NUMBER;
 
         // Attribution
         this.gclid               = DEFAULT_TEXT;
@@ -297,6 +309,7 @@ public with sharing class KJ_Model_Account {
         this.utmContent          = DEFAULT_TEXT;
 
         // Metadata
+        this.archived            = DEFAULT_BOOLEAN;
         this.ownerId             = null;
         this.createdById         = null;
         this.lastModifiedById    = null;
@@ -307,7 +320,7 @@ public with sharing class KJ_Model_Account {
         this.qboAccountId        = null;
     }
 
-    //*--    4.2 Conversion ------------------------------------------------------------------------
+    //*--    Conversion ---------------------------------------------------------------------------
     public Account toRecord(){
         Account newRecord = new Account();
 
@@ -353,7 +366,8 @@ public with sharing class KJ_Model_Account {
         put(newRecord, Account.UTM_Content__c,              this.utmContent);
 
         // Metadata — CreatedById and LastModifiedById omitted, not writeable
-        put(newRecord, Account.OwnerId,                     this.ownerId);
+        put(newRecord, Account.Archived__c,                 this.archived);
+        put(newRecord, Account.OwnerId,                    this.ownerId);
         put(newRecord, Account.Record_Origin__c,            KJ_Model_Picklist.mapToString(this.recordOrigin));
         put(newRecord, Account.Origin_Record_Id__c,         this.originRecordId);
         put(newRecord, Account.Origin_Created_Date__c,      this.originCreatedDate);
@@ -363,7 +377,7 @@ public with sharing class KJ_Model_Account {
         return newRecord;
     }
 
-    //*--    4.3 Setters ---------------------------------------------------------------------------
+    //*--    Setters ------------------------------------------------------------------------------
     // Vital
     public KJ_Model_Account setRecordId(Id initRecordId){
         this.recordId = initRecordId ?? this.recordId;
@@ -455,7 +469,7 @@ public with sharing class KJ_Model_Account {
         this.referredByEmail = initReferredByEmail ?? this.referredByEmail;
         return this;
     }
-    public KJ_Model_Account setReferredByPhone(String initReferredByPhone){
+    public KJ_Model_Account setReferredByPhone(Decimal initReferredByPhone){
         this.referredByPhone = initReferredByPhone ?? this.referredByPhone;
         return this;
     }
@@ -487,6 +501,10 @@ public with sharing class KJ_Model_Account {
     }
 
     // Metadata
+    public KJ_Model_Account setArchived(Boolean initArchived){
+        this.archived = initArchived ?? this.archived;
+        return this;
+    }
     public KJ_Model_Account setRecordOrigin(KJ_Model_Picklist.RecordOrigin initRecordOrigin){
         this.recordOrigin = initRecordOrigin ?? this.recordOrigin;
         return this;

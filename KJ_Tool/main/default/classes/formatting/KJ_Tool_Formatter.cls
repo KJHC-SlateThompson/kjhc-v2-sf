@@ -3,16 +3,21 @@
 *   Authors: Slate Thompson (Slate@kintyjones.com)
 *   Created: 4/1/2026
 *   Description: This class is built to format various data into string format
-
+*
+*   Index:
+*       Constants                   public
+*       Member Methods
+*           toString()              public
+*           toLogEntry()            public
 */
 
 public with sharing class KJ_Tool_Formatter {
-//*-- Constants -------------------------------------------------------------------------------
+    //*-- Constants -------------------------------------------------------------------------------
     public static final String HORIZONTAL_DELIMITER = '; ';
     public static final String VERTICAL_DELIMITER = '\n===============================================================================================\n';
 
-//*-- Member Methods --------------------------------------------------------------------------
-    //* toString()
+    //*-- Member Methods --------------------------------------------------------------------------
+    //*--    toString() ---------------------------------------------------------------------------
     // origin to string
     public static String toString (KJ_Tool_Origin targetOrigin){
         switch on targetOrigin.sourceType{
@@ -92,6 +97,7 @@ public with sharing class KJ_Tool_Formatter {
             when DEFAULT_CODE       { return 'DEFAULT_CODE'; }
             when ROUTING_ERROR      { return 'ROUTING_ERROR'; }
             when INVALID_CONTEXT    { return 'INVALID_CONTEXT'; }
+            when OPERATION_ERROR    { return 'OPERATION_ERROR'; }
             when else               { return 'UNSPECIFIED'; }
         }
     }
@@ -103,8 +109,19 @@ public with sharing class KJ_Tool_Formatter {
             when else   { return 'UNSPECIFIED'; }
         }
     }
+    // Account model to string
+    public static String toString(KJ_Model_Account account){
+        String result;
+        result = 'Account ' + account.name + ' (' + account.recordId + ') -- ';
 
-    //* toLogEntry()
+        result += 'status '     + KJ_Model_Picklist.mapToString(account.status);
+        result += ', sector '   + KJ_Model_Picklist.mapToString(account.sector);
+        result += ', territory ' + KJ_Model_Picklist.mapToString(account.branchTerritory);
+
+        return result;
+    }
+
+    //*--    toLogEntry() -------------------------------------------------------------------------
     public static KJ_Tool_LogEntry toLogEntry(KJ_Tool_Exception e){
         return KJ_Tool_LogEntry.build(
             KJ_Tool_LogEntry.mapToLogEntryLevel(e.level),

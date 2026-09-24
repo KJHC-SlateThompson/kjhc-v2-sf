@@ -3,7 +3,10 @@
 *   Authors: Slate Thompson (Slate@kintyjones.com)
 *   Created: 4/22/2026
 *   Description: This class is built to provide a universal format for returning results
-
+*
+*   Index:
+*       Member Variables            public get; private set
+*       Member Methods              public + private    (private: applyLevelFlag, updateFlags)
 */
 public with sharing class KJ_Tool_Result {
     //*-- Member Variables ------------------------------------------------------------------------

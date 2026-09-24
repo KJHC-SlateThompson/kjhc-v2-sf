@@ -1,33 +1,68 @@
 // accountPkgPipelineTest.apex - Slate Thompson (Slate@kintyjones.com)
-// Walks one Account through: query -> model -> package -> controller -> engine. Read-only.
+// Runs the Account archive pipeline against four packages: null, empty, one mock Account, several mock Accounts.
+// Everything runs inside a savepoint and is rolled back at the end, so the org is left unchanged.
+//
+// Index:
+//     Setup        savepoint, mock Accounts, models
+//     Packages     null, empty, single, multi
+//     Archive      each package through KJ_Dispatch_Account.archive()
+//     Results      result + exception codes per package, Archived__c per mock Account
+//     Cleanup      rollback
 
-// Creates a list of fields on the account object
+//*-- Setup ---------------------------------------------------------------------------------------
+Savepoint savepoint = Database.setSavepoint();
+Integer MULTI_ACCOUNT_COUNT = 3;
+
+// Mock Accounts, inserted so archive() has real Ids to update. Rolled back in Cleanup.
+List<Account> mockAccounts = new List<Account>();
+for(Integer i = 0; i < MULTI_ACCOUNT_COUNT; i++){
+    mockAccounts.add(KJ_Tool_TestDataFactory.createTestAccount());
+}
+insert mockAccounts;
+
+// Re-queried with the model's own field list, so the models line up with the org model
 List<String> fields = new List<String>();
 for(SObjectField field : KJ_Model_Account.getFields()){
     fields.add(String.valueOf(field));
 }
+List<Account> records = Database.query('SELECT ' + String.join(fields, ', ') + ' FROM Account WHERE Id IN :mockAccounts');
+List<KJ_Model_Account> models = KJ_Model_Account.buildAll(records);
 
-// Queries an account record. This gives an org accurate account record to make sure these internal processes still line up with the org model
-List<Account> records = Database.query('SELECT ' + String.join(fields, ', ') + ' FROM Account LIMIT 1');
-if(records.isEmpty()){
-    KJ_Tool_Logger.warn('No Accounts in this org.');
-    return;
+//*-- Packages ------------------------------------------------------------------------------------
+KJ_Tool_Package nullPkg = null;
+
+KJ_Tool_Package emptyPkg = KJ_Tool_Package.build().withLabel('Empty Package');
+
+KJ_Tool_Package singlePkg = KJ_Tool_Package.build(
+    KJ_Tool_DataBundle.build(KJ_Tool_DataEntry.build(models[0]).withLabel('Account'))
+).withLabel('Single Account Package');
+
+KJ_Tool_DataBundle multiBundle = new KJ_Tool_DataBundle();
+for(KJ_Model_Account model : models){
+    multiBundle.add(KJ_Tool_DataEntry.build(model).withLabel('Account'));
+}
+KJ_Tool_Package multiPkg = KJ_Tool_Package.build(multiBundle).withLabel('Multi Account Package');
+
+//*-- Archive -------------------------------------------------------------------------------------
+// The null package is replaced, so its result has to be stored. The rest are modified in place.
+nullPkg = KJ_Dispatch_Account.archive(nullPkg).withLabel('Null Package');
+KJ_Dispatch_Account.archive(emptyPkg);
+KJ_Dispatch_Account.archive(singlePkg);
+KJ_Dispatch_Account.archive(multiPkg);
+
+//*-- Results -------------------------------------------------------------------------------------
+for(KJ_Tool_Package pkg : new List<KJ_Tool_Package>{ nullPkg, emptyPkg, singlePkg, multiPkg }){
+    String codes = '';
+    for(KJ_Tool_Exception e : pkg.result.exceptions){
+        codes += KJ_Tool_Formatter.toString(e.code) + ' ';
+    }
+    KJ_Tool_Logger.debug(pkg.label + ' : success=' + pkg.result.isSuccess + ' exceptions=[ ' + codes + ']');
 }
 
-// Builds Account and package
-KJ_Model_Account model = KJ_Model_Account.build(records[0]);
+// Every mock Account should read Archived__c = true: the single package archives the first, the multi package all of them.
+for(Account record : [SELECT Name, Archived__c FROM Account WHERE Id IN :mockAccounts]){
+    KJ_Tool_Logger.debug(record.Name + ' : Archived__c=' + record.Archived__c);
+}
 
-KJ_Tool_Package pkg = KJ_Tool_Package.build(
-    KJ_Tool_DataBundle.build(KJ_Tool_DataEntry.build(model).withLabel('Account'))
-).withLabel('Account Package');
-
-// Sends package to controller
-KJ_Dispatch_Account.receive(pkg);
-
-KJ_Tool_Logger.debug('Account : ' + model.name);
-KJ_Tool_Logger.debug('Success : ' + pkg.result.isSuccess);
-KJ_Tool_Logger.debug('Message : ' + pkg.result.message);
-
-// Empty bundle should report MISSING_DATA, not a routing failure.
-KJ_Tool_Package empty = KJ_Dispatch_Account.receive(KJ_Tool_Package.build());
-KJ_Tool_Logger.debug('Empty   : ' + empty.result.exceptions[0].code);
+//*-- Cleanup -------------------------------------------------------------------------------------
+Database.rollback(savepoint);
