@@ -39,7 +39,7 @@ public with sharing class KJ_Engine_Account {
         if (accounts.isEmpty()) {
             KJ_Tool_Exception newException = KJ_Tool_Exception.high(
                 KJ_Tool_Exception.Code.MISSING_DATA,
-                'arc    hive received no Account entries.'
+                'archive received no Account entries.'
             );
             pkg.result.addException(newException);
             return pkg;

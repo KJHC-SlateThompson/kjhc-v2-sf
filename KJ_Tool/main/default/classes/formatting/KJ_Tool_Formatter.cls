@@ -91,15 +91,8 @@ public with sharing class KJ_Tool_Formatter {
         
         return result;
     }
-     public static String toString(KJ_Tool_Exception.Code targetCode){
-        switch on targetCode{
-            when TEST_EXCEPTION     { return 'TEST_EXCEPTION'; }
-            when DEFAULT_CODE       { return 'DEFAULT_CODE'; }
-            when ROUTING_ERROR      { return 'ROUTING_ERROR'; }
-            when INVALID_CONTEXT    { return 'INVALID_CONTEXT'; }
-            when OPERATION_ERROR    { return 'OPERATION_ERROR'; }
-            when else               { return 'UNSPECIFIED'; }
-        }
+    public static String toString(KJ_Tool_Exception.Code targetCode){
+        return targetCode.name();
     }
      public static String toString(KJ_Tool_Exception.Level targetLevel){
         switch on targetLevel{
