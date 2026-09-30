@@ -11,13 +11,31 @@ public with sharing class KJ_Engine_Account {
     //*-- Static Methods --------------------------------------------------------------------------
     // Triggered methods
     public static void onBeforeInsert(KJ_Tool_Package pkg){}
-    public static void onBeforeUpdate(KJ_Tool_Package pkg){}
+    public static void onBeforeUpdate(KJ_Tool_Package pkg){
+        KJ_Tool_TriggerContext ctx = pkg.triggerContext;
+
+        for(Account record : (List<Account>) ctx.newList){
+            Account oldRecord = (Account) ctx.oldMap.get(record.Id);
+
+            // Customer Since: set the first time the Account becomes a Current Customer
+            KJ_Model_Picklist.AccountStatus recordAccountStatus = KJ_Model_Picklist.mapToAccountStatus(record.Account_Status__c);
+            if(
+                recordAccountStatus == KJ_Model_Picklist.AccountStatus.CURRENT_CUSTOMER &&
+                record.Customer_Since__c == null
+                ){
+                record.Customer_Since__c = System.today();
+            }
+        } 
+        
+    }
     public static void onBeforeDelete(KJ_Tool_Package pkg){}
 
     public static void onAfterInsert(KJ_Tool_Package pkg){}
     public static void onAfterUpdate(KJ_Tool_Package pkg){}
     public static void onAfterDelete(KJ_Tool_Package pkg){}
     public static void onAfterUndelete(KJ_Tool_Package pkg){}
+    
+
     
 
     public static KJ_Tool_Package archive(KJ_Tool_Package pkg){

@@ -120,7 +120,6 @@ public with sharing class KJ_Tool_TestDataFactory {
 
             Invoiced_Revenue__c         = 9.99,
             Originating_Lead__c         = originatingLeadIdArg,
-            Customer_Since__c           = System.today(),
             Account_Lead_Source__c      = 'Existing Customer',
             Referred_By__c              = 'Referrer Name Sample'
         );
