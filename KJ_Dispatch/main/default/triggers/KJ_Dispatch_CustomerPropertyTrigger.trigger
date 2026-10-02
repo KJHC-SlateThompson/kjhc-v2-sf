@@ -1,4 +1,4 @@
-trigger KJ_Dispatch_CustomerPropertyTrigger on CustomerProperty (
+trigger KJ_Dispatch_CustomerPropertyTrigger on Customer_Property__c (
     before insert, before update, before delete,
     after insert, after update, after delete, after undelete
 ) {

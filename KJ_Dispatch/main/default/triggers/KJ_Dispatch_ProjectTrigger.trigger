@@ -1,8 +1,8 @@
-trigger KJ_Dispatch_ProjectTrigger on Project (
+trigger KJ_Dispatch_ProjectTrigger on Project__c (
     before insert, before update, before delete,
     after insert, after update, after delete, after undelete
 ) {
     KJ_Dispatch_Project.receive(
-        KJ_Tool_Package.fromTrigger('Project', 'KJ_Dispatch_AccountTrigger')
+        KJ_Tool_Package.fromTrigger('Project', 'KJ_Dispatch_ProjectTrigger')
     );
 }
