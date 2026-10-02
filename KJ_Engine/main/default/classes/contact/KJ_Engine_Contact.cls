@@ -6,7 +6,7 @@
 
 */
 public with sharing class KJ_Engine_Contact {
-        //*-- Static Methods --------------------------------------------------------------------------
+    //*-- Static Methods --------------------------------------------------------------------------
     // Triggered methods
     public static void onBeforeInsert(KJ_Tool_Package pkg){}
     public static void onBeforeUpdate(KJ_Tool_Package pkg){}
