@@ -17,6 +17,7 @@ public with sharing class KJ_Tool_Exception extends Exception{
         INVALID_CONTEXT, // Used if a controller is invoked without the context its routing requires.
         MISSING_DATA, // Used if the dataBundle lacks what the engine needs to do its work.
         OPERATION_ERROR, // Used if an engine operation throws while doing its work (e.g. a failed DML).
+        VALIDATION_ERROR
         DEFAULT_CODE,
         TEST_EXCEPTION
     }

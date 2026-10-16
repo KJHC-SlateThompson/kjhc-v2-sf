@@ -90,12 +90,10 @@ public with sharing class KJ_Engine_Account {
 
     public static void onAfterInsert(KJ_Tool_Package pkg){}
     public static void onAfterUpdate(KJ_Tool_Package pkg){}
-    public static void onAfterDelete(KJ_Tool_Package pkg){
-        // disconnect related objects
-    }
+    public static void onAfterDelete(KJ_Tool_Package pkg){}
     public static void onAfterUndelete(KJ_Tool_Package pkg){}
     
-
+    // Called methods
     public static KJ_Tool_Package archive(KJ_Tool_Package pkg){
         List<KJ_Model_Account> accounts = new List<KJ_Model_Account>();
 
