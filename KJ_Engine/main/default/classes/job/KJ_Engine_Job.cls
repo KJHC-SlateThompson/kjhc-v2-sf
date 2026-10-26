@@ -11,6 +11,40 @@ public with sharing class KJ_Engine_Job {
     public static void onBeforeInsert(KJ_Tool_Package pkg){
         KJ_Tool_TriggerContext ctx = pkg.triggerContext;
 
+        // Gather parent Ids
+        Set<Id> parentAccountIds = new Set<Id>();
+        Set<Id> parentProjectIds = new Set<Id>();
+        Set<Id> primaryContactIds = new Set<Id>();
+        Set<Id> jobPropertyIds = new Set<Id>();
+        for(Job__c record : (List<Job__c>) ctx.newList){
+            parentAccountIds.add(record.Parent_Account__c);
+            parentProjectIds.add(record.Parent_Project__c);
+            primaryContactIds.add(record.Primary_Contact__c);
+            jobPropertyIds.add(record.Customer_Property__c);
+        }
+
+        // Related Objects
+        Map<Id, Account> parentAccounts = new Map<Id, Account>([
+            SELECT Account_Sector__c, Property_Address__c, Primary_Contacy
+            FROM Account
+            WHERE Id IN :parentAccountIds
+        ]);
+        Map<Id, Project__c> parentProjects = new Map<Id, Project__c>([
+            SELECT Primary_Contact__c, Service_Type__c
+            FROM Project__c
+            WHERE Id IN :parentProjectIds
+        ]);
+        Map<Id, Contact> primaryContacts = new Map<Id, Contact>([
+            SELECT
+            FROM Contact
+            WHERE Id IN :primaryContactIds
+        ]);
+        Map<Id, Customer_Property__c> jobProperties = new Map<Id, Customer_Property__c>([
+            SELECT
+            FROM Customer_Property__c
+            Where Id IN :jobPropertyIds
+        ]);
+
         for(Jobs__c record : (List<Job__c>) ctx.newList){
             // Validation
             if(record.Parent_Account__c == null){
@@ -69,68 +103,52 @@ public with sharing class KJ_Engine_Job {
                 return pkg;
             }
 
-            // Related Objects
-            Account parentAccount = [
-                SELECT Account_Sector__c, Property_Address__c, Primary_Contacy
-                FROM Account 
-                WHERE Id = :record.Parent_Account__c
-            ];
-            Project__c parentProject = [
-                SELECT Primary_Contact__c, Service_Type__c
-                FROM Project__c 
-                WHERE Id = :record.Parent_Project__c
-            ];
-            Contact primaryContact = [
-                SELECT 
-                FROM Contact
-                WHERE Id = :record.Primary_Contact__c
-            ];
-            Customer_Property__c jobProperty = [
-                SELECT
-                FROM Customer_Property__c
-                Where Id = :record.Customer_Property__c
-            ];
+            // Related Objects (null when not linked)
+            Account parentAccount = parentAccounts.get(record.Parent_Account__c);
+            Project__c parentProject = parentProjects.get(record.Parent_Project__c);
+            Contact primaryContact = primaryContacts.get(record.Primary_Contact__c);
+            Customer_Property__c jobProperty = jobProperties.get(record.Customer_Property__c);
 
             // Fill in Primary Contact if blank
             if(record.Primary_Contact__c == null){
-                if(parentProject.Primary_Contact__c != null){
+                if(parentProject?.Primary_Contact__c != null){
                     record.Primary_Contact__c = parentProject.Primary_Contact__c;
                 }
-                else if(parentAccount.Primary_Contact__c !- null){
+                else if(parentAccount?.Primary_Contact__c !- null){
                     record.Primary_Contact__c = parentAccount.Primary_Contact__c;
                 }
             }
 
             // fill in Sector if blank
             if(record.Sector__c == null){
-                if(parentProject.Sector__c != null){
+                if(parentProject?.Sector__c != null){
                     record.Sector__c = parentProject.Sector__c;
                 }
-                else if(parentAccount.Sector__c != null){
+                else if(parentAccount?.Sector__c != null){
                     record.Sector__c = parentAccount.Sector__c;
                 }
             }
 
             // fill in service type if blank
             if(record.Service_Type__c == null){
-                if(parentProject.Service_Type__c != null){
+                if(parentProject?.Service_Type__c != null){
                     record.Service_Type__c = parentProject.Service_Type__c;
                 }
             }
 
             // fill in service territory if blank
             if(record.Service_Territory__c == null){
-                if(parentProject.Service_Territory__c != null){
+                if(parentProject?.Service_Territory__c != null){
                     record.Service_Territory__c = parentProject.Service_Territory__c;
                 }
-                else if(parentAccount.Service_Territory__c != null){
+                else if(parentAccount?.Service_Territory__c != null){
                     record.Service_Territory__c = parentAccount.Service_Territory__c;
                 }
             }
         
             // Mark last service date on account (if job is done and is most recent)
             if(record.Job_Status__c == 'Completed' && record.Actual_End__c != null){
-                if(record.Actual_End__c > parentAccount.Last_Service_Date__c){
+                if(record.Actual_End__c > parentAccount?.Last_Service_Date__c){
                     parentAccount.Last_Service_Date__c = record.Actual_End__c;
                 }
             }

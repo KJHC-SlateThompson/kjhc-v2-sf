@@ -99,13 +99,7 @@ public with sharing class KJ_Engine_Account {
 
         for(KJ_Tool_DataEntry entry : pkg.dataBundle.entries){
             if (!(entry.value instanceof KJ_Model_Account)){
-                KJ_Tool_Exception newException = KJ_Tool_Exception.high(
-                    KJ_Tool_Exception.Code.MISSING_DATA,
-                    'archive received a non-Account entry: ' + entry.label
-                );
-                pkg.result.addException(newException);
-
-                return pkg;
+                 
             }
             accounts.add((KJ_Model_Account) entry.value);
         }

@@ -11,20 +11,30 @@ public with sharing class KJ_Engine_CustomerProperty {
     public static void onBeforeInsert(KJ_Tool_Package pkg){
         KJ_Tool_TriggerContext ctx = pkg.triggerContext;
 
+        // Gather parent Ids
+        Set<Id> parentAccountIds = new Set<Id>();
         for(Customer_Property__c record : (List<Customer_Property__c>) ctx.newList){
-            Account parentAccount = [
-                SELECT Account_Sector__c, property_Address__c
-                FROM Account 
-                WHERE Id = :record.AccountId
-            ];
+            parentAccountIds.add(record.AccountId);
+        }
+
+        // Related Objects
+        Map<Id, Account> parentAccounts = new Map<Id, Account>([
+            SELECT Account_Sector__c, property_Address__c
+            FROM Account
+            WHERE Id IN :parentAccountIds
+        ]);
+
+        for(Customer_Property__c record : (List<Customer_Property__c>) ctx.newList){
+            // Related Objects (null when not linked)
+            Account parentAccount = parentAccounts.get(record.AccountId);
     
             // copy sector from account if blank
             if (record.Property_Sector__c == null && record.AccountId != null){
-                record.Property_Sector__c = parentAccount.Account_Sector__c;
+                record.Property_Sector__c = parentAccount?.Account_Sector__c;
             }
 
             // copy address from account if blank
-            if (record.Property_Address__c == null && parentAccount.Service_Address__c != null){
+            if (record.Property_Address__c == null && parentAccount?.Service_Address__c != null){
                 record.Property_Address__Street__c     = parentAccount.Service_Address__Street__s;
                 record.Property_Address__City__c       = parentAccount.Service_Address__City__s;
                 record.Property_Address__State__c      = parentAccount.Service_Address__State__s;
