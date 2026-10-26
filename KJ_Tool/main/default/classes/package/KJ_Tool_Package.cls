@@ -62,6 +62,25 @@ public with sharing class KJ_Tool_Package {
                                 .withTriggerContext(KJ_Tool_TriggerContext.build());
     }
 
+    // Trigger result reporting. Blocks the save for every HIGH/FATAL exception: on its record
+    // when it has one, otherwise on the whole batch. LOW exceptions don't block.
+    public void applyErrorsToRecords(){
+        List<SObject> batch = triggerContext.isDelete ? triggerContext.oldList : triggerContext.newList;
+
+        for(KJ_Tool_Exception e : result.exceptions){
+            if(e.level == KJ_Tool_Exception.Level.LOW){ continue; }
+
+            if(e.record != null){
+                e.record.addError(e.message);
+            }
+            else{
+                for(SObject record : batch){
+                    record.addError(e.message);
+                }
+            }
+        }
+    }
+
     // Setters
     public KJ_Tool_Package withLabel(String initLabel){
         this.label = initLabel ?? this.label;

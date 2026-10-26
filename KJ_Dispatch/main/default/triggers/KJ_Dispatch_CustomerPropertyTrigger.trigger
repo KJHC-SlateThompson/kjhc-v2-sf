@@ -4,5 +4,5 @@ trigger KJ_Dispatch_CustomerPropertyTrigger on Customer_Property__c (
 ) {
     KJ_Dispatch_CustomerProperty.receive(
         KJ_Tool_Package.fromTrigger('CustomerProperty', 'KJ_Dispatch_CustomerPropertyTrigger')
-    );
+    ).applyErrorsToRecords();
 }

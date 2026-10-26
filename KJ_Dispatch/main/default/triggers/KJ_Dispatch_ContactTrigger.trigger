@@ -4,5 +4,5 @@ trigger KJ_Dispatch_ContactTrigger on Contact (
 ) {
     KJ_Dispatch_Contact.receive(
         KJ_Tool_Package.fromTrigger('Contact', 'KJ_Dispatch_ContactTrigger')
-    );
+    ).applyErrorsToRecords();
 }

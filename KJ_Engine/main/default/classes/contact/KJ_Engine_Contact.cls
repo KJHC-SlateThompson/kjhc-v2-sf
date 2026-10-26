@@ -30,11 +30,12 @@ public with sharing class KJ_Engine_Contact {
             if (record.Phone == null && record.Email && record.MailingAddress){
                 KJ_Tool_Exception newException = KJ_Tool_Exception.high(
                     KJ_Tool_Exception.Code.VALIDATION_ERROR,
-                    'Contact does not have any of the following contact methods: Phone, Email, Mailing Address'
+                    'Contact does not have any of the following contact methods: Phone, Email, Mailing Address',
+                    record
                 );
                 pkg.result.addException(newException);
 
-                return pkg;
+                continue;
             }
 
             // Setting vars for use in operations

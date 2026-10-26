@@ -50,57 +50,63 @@ public with sharing class KJ_Engine_Job {
             if(record.Parent_Account__c == null){
                 KJ_Tool_Exception newException = KJ_Tool_Exception.high(
                     KJ_Tool_Exception.Code.VALIDATION_ERROR,
-                    'No Parent Account. Parent Account required. Entry: ' + entry.label
+                    'No Parent Account. Parent Account required.',
+                    record
                 );
                 pkg.result.addException(newException);
 
-                return pkg;
+                continue;
             }
             if(record.Parent_Project__c == null){
                 KJ_Tool_Exception newException = KJ_Tool_Exception.high(
                     KJ_Tool_Exception.Code.VALIDATION_ERROR,
-                    'No Parent Project. Parent Project required. Entry: ' + entry.label
+                    'No Parent Project. Parent Project required.',
+                    record
                 );
                 pkg.result.addException(newException);
 
-                return pkg;
+                continue;
             }
             if(record.Customer_Property__c == null){
                 KJ_Tool_Exception newException = KJ_Tool_Exception.high(
                     KJ_Tool_Exception.Code.VALIDATION_ERROR,
-                    'No Customer Property. Customer Property required. Entry: ' + entry.label
+                    'No Customer Property. Customer Property required.',
+                    record
                 );
                 pkg.result.addException(newException);
 
-                return pkg;
+                continue;
             }
 
             if(record.Scheduled_Start__c <= record.Scheduled_End__c){
                 KJ_Tool_Exception newException = KJ_Tool_Exception.high(
                     KJ_Tool_Exception.Code.VALIDATION_ERROR,
-                    'Scheduled end is before (or the same as) scheduled start. entry: ' + entry.label
+                    'Scheduled end is before (or the same as) scheduled start.',
+                    record
                 );
                 pkg.result.addException(newException);
 
-                return pkg;
+                continue;
             }
             if(record.Actual_Start__c <= record.Actual_End__c){
                 KJ_Tool_Exception newException = KJ_Tool_Exception.high(
                     KJ_Tool_Exception.Code.VALIDATION_ERROR,
-                    'Actual end is before (or the same as) actual start. entry: ' + entry.label
+                    'Actual end is before (or the same as) actual start.',
+                    record
                 );
                 pkg.result.addException(newException);
 
-                return pkg;
+                continue;
             }
             if(record.Travel_Start__c <= record.Travel_End__c){
                 KJ_Tool_Exception newException = KJ_Tool_Exception.high(
                     KJ_Tool_Exception.Code.VALIDATION_ERROR,
-                    'Travel end is before (or the same as) Travel start. entry: ' + entry.label
+                    'Travel end is before (or the same as) Travel start.',
+                    record
                 );
                 pkg.result.addException(newException);
 
-                return pkg;
+                continue;
             }
 
             // Related Objects (null when not linked)

@@ -4,5 +4,5 @@ trigger KJ_Dispatch_HvacUnitTrigger on HVAC_Unit__c (
 ) {
     KJ_Dispatch_HvacUnit.receive(
         KJ_Tool_Package.fromTrigger('HvacUnit', 'KJ_Dispatch_HvacUnitTrigger')
-    );
+    ).applyErrorsToRecords();
 }
