@@ -33,16 +33,16 @@ public with sharing class KJ_Engine_Account {
             if(String.isBlank(record.BillingStreet) && String.isNotBlank(record.Service_Address__Street__s)){
                 record.BillingStreet     = record.Service_Address__Street__s;
                 record.BillingCity       = record.Service_Address__City__s;
-                record.BillingState      = record.Service_Address__State__s;
-                record.BillingPostalCode = record.Service_Address__PostalCode__s;
-                record.BillingCountry    = record.Service_Address__Country__s;
+                record.BillingStateCode   = record.Service_Address__StateCode__s;
+                record.BillingPostalCode  = record.Service_Address__PostalCode__s;
+                record.BillingCountryCode = record.Service_Address__CountryCode__s;
             }
 
             // Setting Default Service Territory
             if(record.Branch_Territory__c == null){
-                switch on record.Service_Address__State__s {
-                    when 'Arkansas'{ record.Branch_Territory__c = 'NWA'; }
-                    when 'Oklahoma'{ record.Branch_Territory__c = 'Tulsa'; }
+                switch on record.Service_Address__StateCode__s {
+                    when 'AR'{ record.Branch_Territory__c = 'NWA'; }
+                    when 'OK'{ record.Branch_Territory__c = 'Tulsa'; }
                 }
             }
         } 
