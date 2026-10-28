@@ -17,6 +17,7 @@ public with sharing class KJ_Tool_Exception extends Exception{
         INVALID_CONTEXT, // Used if a controller is invoked without the context its routing requires.
         MISSING_DATA, // Used if the dataBundle lacks what the engine needs to do its work.
         OPERATION_ERROR, // Used if an engine operation throws while doing its work (e.g. a failed DML).
+        VALIDATION_ERROR,
         DEFAULT_CODE,
         TEST_EXCEPTION
     }
@@ -32,10 +33,11 @@ public with sharing class KJ_Tool_Exception extends Exception{
     public Level            level           { get; private set; }
     public String           message         { get; private set; }
     public KJ_Tool_Origin   origin          { get; private set; }
+    public SObject          record          { get; private set; } // The record this exception is about. null = applies to the whole batch.
 
     //*-- Member Methods --------------------------------------------------------------------------
     // Factory methods
-    public static KJ_Tool_Exception build(Exception newNativeException, Code newCode, Level newLevel, String newMessage, KJ_Tool_Origin newOrigin){
+    public static KJ_Tool_Exception build(Exception newNativeException, Code newCode, Level newLevel, String newMessage, KJ_Tool_Origin newOrigin, SObject newRecord){
         KJ_Tool_Exception newException = new KJ_Tool_Exception();
 
         newException.nativeException    = newNativeException    ?? null;
@@ -43,8 +45,12 @@ public with sharing class KJ_Tool_Exception extends Exception{
         newException.level              = newLevel              ?? Level.LOW;
         newException.message            = newMessage            ?? newNativeException?.getMessage() ?? '';
         newException.origin             = newOrigin             ?? new KJ_Tool_Origin();
+        newException.record             = newRecord             ?? null;
 
         return newException;
+    }
+    public static KJ_Tool_Exception build(Exception newNativeException, Code newCode, Level newLevel, String newMessage, KJ_Tool_Origin newOrigin){
+        return build(newNativeException, newCode, newLevel, newMessage, newOrigin, null);
     }
     public static KJ_Tool_Exception build(Code newCode, Level newLevel, String newMessage, KJ_Tool_Origin newOrigin){
         return build(null, newCode, newLevel, newMessage, newOrigin);
@@ -54,8 +60,11 @@ public with sharing class KJ_Tool_Exception extends Exception{
     public static KJ_Tool_Exception low(Code code, String message, KJ_Tool_Origin origin){
         return build(code, Level.LOW, message, origin);
     }
+    public static KJ_Tool_Exception low(Code code, String message, SObject record){
+        return build(null, code, Level.LOW, message, null, record);
+    }
     public static KJ_Tool_Exception low(Code code, String message){
-        return low(code, message, null);
+        return build(code, Level.LOW, message, null);
     }
     public static KJ_Tool_Exception low(Exception nativeException, Code code){
         return build(nativeException, code, Level.LOW, null, null);
@@ -64,9 +73,12 @@ public with sharing class KJ_Tool_Exception extends Exception{
     public static KJ_Tool_Exception high(Code code, String message, KJ_Tool_Origin origin){
         return build(code, Level.HIGH, message, origin);
     }
+    public static KJ_Tool_Exception high(Code code, String message, SObject record){
+        return build(null, code, Level.HIGH, message, null, record);
+    }
     public static KJ_Tool_Exception high(Code code, String message){
-        return high(code, message, null);
-    }    
+        return build(code, Level.HIGH, message, null);
+    }
     public static KJ_Tool_Exception high(Exception nativeException, Code code){
         return build(nativeException, code, Level.HIGH, null, null);
     }
@@ -74,8 +86,11 @@ public with sharing class KJ_Tool_Exception extends Exception{
     public static KJ_Tool_Exception fatal(Code code, String message, KJ_Tool_Origin origin){
         return build(code, Level.FATAL, message, origin);
     }
+    public static KJ_Tool_Exception fatal(Code code, String message, SObject record){
+        return build(null, code, Level.FATAL, message, null, record);
+    }
     public static KJ_Tool_Exception fatal(Code code, String message){
-        return fatal(code, message, null);
+        return build(code, Level.FATAL, message, null);
     }
     public static KJ_Tool_Exception fatal(Exception nativeException, Code code){
         return build(nativeException, code, Level.FATAL, null, null);
@@ -94,5 +109,8 @@ public with sharing class KJ_Tool_Exception extends Exception{
     }
     public void setOrigin(KJ_Tool_Origin newOrigin){
         this.origin = newOrigin ?? this.origin;
+    }
+    public void setRecord(SObject newRecord){
+        this.record = newRecord ?? this.record;
     }
 }

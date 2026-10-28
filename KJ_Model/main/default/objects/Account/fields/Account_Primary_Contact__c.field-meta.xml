@@ -4,8 +4,8 @@
     <deleteConstraint>SetNull</deleteConstraint>
     <label>Account Primary Contact</label>
     <referenceTo>Contact</referenceTo>
-    <relationshipLabel>Accounts</relationshipLabel>
-    <relationshipName>Accounts</relationshipName>
+    <relationshipLabel>Primary Contact Accounts</relationshipLabel>
+    <relationshipName>Primary_Contact_Accounts</relationshipName>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
     <type>Lookup</type>

@@ -4,5 +4,5 @@ trigger KJ_Dispatch_ProjectTrigger on Project__c (
 ) {
     KJ_Dispatch_Project.receive(
         KJ_Tool_Package.fromTrigger('Project', 'KJ_Dispatch_ProjectTrigger')
-    );
+    ).applyErrorsToRecords();
 }
