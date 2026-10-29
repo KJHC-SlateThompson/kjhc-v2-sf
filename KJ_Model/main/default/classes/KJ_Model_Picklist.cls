@@ -38,21 +38,22 @@ public with sharing class KJ_Model_Picklist {
     //*-- Territory -------------------------------------------------------------------------------
     public enum Territory {
         NWA,
-        RIVER_VALLEY,
+        TULSA,
         UNKNOWN
     }
+    // River Valley was folded into NWA, so legacy 'River Valley' values map there
     public static Territory mapToTerritory(String territoryValue){
         if(String.isBlank(territoryValue)) { return Territory.UNKNOWN; }
         switch on territoryValue.toUpperCase() {
-            when 'NWA'          { return Territory.NWA; }
-            when 'RIVER VALLEY' { return Territory.RIVER_VALLEY; }
-            when else           { return Territory.UNKNOWN; }
+            when 'NWA', 'RIVER VALLEY'  { return Territory.NWA; }
+            when 'TULSA'                { return Territory.TULSA; }
+            when else                   { return Territory.UNKNOWN; }
         }
     }
     public static String mapToString(Territory territoryValue){
         switch on territoryValue {
             when NWA            { return 'NWA'; }
-            when RIVER_VALLEY   { return 'River Valley'; }
+            when TULSA          { return 'Tulsa'; }
             when else           { return null; }
         }
     }
