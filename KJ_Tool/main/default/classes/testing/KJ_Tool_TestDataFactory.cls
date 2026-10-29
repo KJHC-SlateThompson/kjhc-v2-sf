@@ -222,12 +222,13 @@ public with sharing class KJ_Tool_TestDataFactory {
             Customer_Property__c    = customerPropertyArg,
             Branch_Territory__c     = DEFAULT_BRANCH_TERRITORY,
 
-            Due_Date__c             = DEFAULT_DATETIME,
+            // 30 minutes of travel, then a 2 hour visit, due the next day
+            Due_Date__c             = DEFAULT_DATETIME.addDays(1),
             Scheduled_Start__c      = DEFAULT_DATETIME,
-            Scheduled_End__c        = DEFAULT_DATETIME,
+            Scheduled_End__c        = DEFAULT_DATETIME.addHours(2),
             Actual_Start__c         = DEFAULT_DATETIME,
-            Actual_End__c           = DEFAULT_DATETIME,
-            Travel_Start__c         = DEFAULT_DATETIME,
+            Actual_End__c           = DEFAULT_DATETIME.addHours(2),
+            Travel_Start__c         = DEFAULT_DATETIME.addMinutes(-30),
             Travel_End__c           = DEFAULT_DATETIME
         );
 
@@ -302,7 +303,7 @@ public with sharing class KJ_Tool_TestDataFactory {
             Membership_Notes__c             = DEFAULT_NOTES, 
 
             Membership_Start_Date__c        = DEFAULT_DATE,
-            Membership_Expiration_Date__c   = DEFAULT_DATE
+            Membership_Expiration_Date__c   = DEFAULT_DATE.addYears(1)
         );
 
         return newMembership;

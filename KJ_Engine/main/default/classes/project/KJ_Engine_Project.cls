@@ -115,8 +115,12 @@ public with sharing class KJ_Engine_Project {
                 record.Actual_End_Date__c = System.today();
             }
 
-            // Name: {street address} - {start date}
-            if(String.isNotBlank(projectProperty?.Property_Address__Street__s) && record.Scheduled_Start_Date__c != null){
+            // Name if blank: {street address} - {start date}
+            if(
+                String.isBlank(record.Project_Name__c) &&
+                String.isNotBlank(projectProperty?.Property_Address__Street__s) &&
+                record.Scheduled_Start_Date__c != null
+            ){
                 record.Project_Name__c = projectProperty.Property_Address__Street__s + ' - ' + record.Scheduled_Start_Date__c.format();
             }
         }
