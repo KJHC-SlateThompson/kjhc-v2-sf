@@ -82,7 +82,6 @@ public with sharing class KJ_Model_Account {
     private static final String                          DEFAULT_TEXT      = null;
     private static final Decimal                         DEFAULT_NUMBER    = null;
     private static final Date                            DEFAULT_DATE      = null;
-    private static final Datetime                        DEFAULT_DATETIME  = null;
     private static final Boolean                         DEFAULT_BOOLEAN   = false;
     private static final KJ_Model_Picklist.AccountStatus DEFAULT_STATUS    = KJ_Model_Picklist.AccountStatus.UNKNOWN;
     private static final KJ_Model_Picklist.Sector        DEFAULT_SECTOR    = KJ_Model_Picklist.Sector.UNKNOWN;
@@ -144,7 +143,7 @@ public with sharing class KJ_Model_Account {
     public Id                              lastModifiedById    { get; private set; }
     public KJ_Model_Picklist.RecordOrigin  recordOrigin        { get; private set; }
     public String                          originRecordId      { get; private set; }
-    public Datetime                        originCreatedDate   { get; private set; }
+    public Date                            originCreatedDate   { get; private set; }
     public String                          fieldPulseAccountId { get; private set; }
     public String                          qboAccountId        { get; private set; }
 
@@ -206,7 +205,7 @@ public with sharing class KJ_Model_Account {
         newModel.lastModifiedById    = (Id)      read(source, Account.LastModifiedById)            ?? newModel.lastModifiedById;
         newModel.recordOrigin        = KJ_Model_Picklist.mapToRecordOrigin((String) read(source, Account.Record_Origin__c));
         newModel.originRecordId      = (String)  read(source, Account.Origin_Record_Id__c)         ?? newModel.originRecordId;
-        newModel.originCreatedDate   = (Datetime) read(source, Account.Origin_Created_Date__c)     ?? newModel.originCreatedDate;
+        newModel.originCreatedDate   = (Date)    read(source, Account.Origin_Created_Date__c)     ?? newModel.originCreatedDate;
         newModel.fieldPulseAccountId = (String)  read(source, Account.FieldPulse_Account_Id__c)    ?? newModel.fieldPulseAccountId;
         newModel.qboAccountId        = (String)  read(source, Account.QBO_Account_Id__c)           ?? newModel.qboAccountId;
 
@@ -315,7 +314,7 @@ public with sharing class KJ_Model_Account {
         this.lastModifiedById    = null;
         this.recordOrigin        = DEFAULT_ORIGIN;
         this.originRecordId      = null;
-        this.originCreatedDate   = DEFAULT_DATETIME;
+        this.originCreatedDate   = DEFAULT_DATE;
         this.fieldPulseAccountId = null;
         this.qboAccountId        = null;
     }
@@ -513,7 +512,7 @@ public with sharing class KJ_Model_Account {
         this.originRecordId = initOriginRecordId ?? this.originRecordId;
         return this;
     }
-    public KJ_Model_Account setOriginCreatedDate(Datetime initOriginCreatedDate){
+    public KJ_Model_Account setOriginCreatedDate(Date initOriginCreatedDate){
         this.originCreatedDate = initOriginCreatedDate ?? this.originCreatedDate;
         return this;
     }
