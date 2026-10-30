@@ -37,7 +37,7 @@ flowchart LR
 | Trigger | Builds the package with `KJ_Tool_Package.fromTrigger(objectName, triggerName)`, calls `KJ_Dispatch_X.receive`, then `applyErrorsToRecords()` on the returned package | Hold logic |
 | Controller (`KJ_Dispatch_X`) | Null-checks the package and routes it to the engine method for the trigger event. Turns any thrown exception into a FATAL `KJ_Tool_Exception`. | Touch records |
 | Engine (`KJ_Engine_X`) | Defaults, validation, and updates to related records. One static method per trigger event, plus called operations. | Throw for validation. It adds exceptions to the package instead. |
-| Model (`KJ_Model_X`) | Typed wrapper for one record: `build()` from a record, `toRecord()` back, `setX()` setters, field groups, `getFields()` | Query. Callers build their own SOQL from `getFields()`. Query and retrieval code is planned (stated by Slate). |
+| Model (`KJ_Model_X`) | Typed wrapper for one record: `build()` from a record, `toRecord()` back, `setX()` setters, field groups, `getFields()` | Query. Callers build their own SOQL from `getFields()`. Query and retrieval code is planned. |
 
 There is no separate process layer.
 
@@ -92,7 +92,7 @@ sequenceDiagram
 - Example caller: `KJ_Execute/scripts/apex/tests/accountPkgPipelineTest.apex`.
 
 ## Integration pipeline
-Not built yet (stated by Slate). `KJ_Integrate` holds no metadata.
+Not built yet. `KJ_Integrate` holds no metadata.
 
 ## Package
 `KJ_Tool_Package` (`KJ_Tool/main/default/classes/package/`):

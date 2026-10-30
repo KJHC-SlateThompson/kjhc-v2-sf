@@ -58,7 +58,7 @@ Defaults: scalars are null, Booleans are `false`, picklist enums are `UNKNOWN`.
 - **Models** use `setX()`, which returns `this` (`KJ_Model_Account.setArchived(true)`).
 - **Tool builders** use `withX()` for assembly (`KJ_Tool_Package.build().withLabel(...).withTriggerContext(...)`), and `setX()` for plain mutators (`KJ_Tool_Result.setMessage`).
 
-The two exist for different use cases (stated by Slate). Both ignore null: `this.x = initX ?? this.x;`.
+The two serve different use cases. Both ignore null: `this.x = initX ?? this.x;`.
 
 ## Picklists
 Every picklist value goes through `KJ_Model_Picklist`. Each picklist gets an enum, a `mapTo<Type>(String)` and a `mapToString(<enum>)`:

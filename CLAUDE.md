@@ -31,7 +31,7 @@ Objects: Account, Contact, `Customer_Property__c`, `Membership__c`, `HVAC_Unit__
 ## Commands
 Target org alias: `kjhc-dev-org`. It's a sandbox used for both development and testing.
 
-Agents never deploy. Slate runs every deploy. Agents may use `--dry-run`, queries, and anonymous Apex that rolls back.
+Only Slate deploys. For checks, use `--dry-run`, queries, or anonymous Apex that rolls back.
 
 ```
 sf project deploy start --source-dir KJ_Tool KJ_Model KJ_Dispatch KJ_Engine --target-org kjhc-dev-org --dry-run
@@ -50,4 +50,4 @@ sf apex run --file KJ_Execute/scripts/apex/tests/accountPkgPipelineTest.apex --t
 - `docs/architecture.md`: domains, layers, pipelines, package, errors
 - `docs/domains/<object>.md`: classes, automations and tests for each object
 - `C:\Users\slate\dev\work\Projects\kjhc-docs`: platform-level and cross-system docs (data model, integrations, decisions, glossary)
-- Docs rules: don't invent rationale (`TODO(slate): <question>`), mark what you couldn't confirm `UNVERIFIED`, cite file paths, no secret values. `.forceignore` excludes `**/docs/**` and `**/*.md` from deploys.
+- Docs rules: don't invent rationale (`TODO(slate): <question>`), mark anything unconfirmed `UNVERIFIED`, cite file paths, no secret values. `.forceignore` excludes `**/docs/**` and `**/*.md` from deploys.

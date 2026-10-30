@@ -50,7 +50,7 @@ All in `KJ_Engine_Project`, before insert. The validations run first, and a fail
 | `KJ_Dispatch_Project_Test` | `receive_InvalidPackages_FailPath`, `receive_EmptyTriggerContext_HappyPath`, `insert_FillsBlanks_HappyPath`, `insert_KeepsProvidedValues_HappyPath`, `insert_DateValidation_MixedPath`, `projectTrigger_BulkBatch_HappyPath` |
 
 ## Status
-Stable. No model class. Financial fields are planned (stated by Slate).
+Stable. No model class. Financial fields are planned.
 
 ## Gaps
 - Status stamps and validation run on insert only. Moving a Project to In Progress or Completed later doesn't stamp the dates.

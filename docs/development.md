@@ -16,8 +16,6 @@ Seven package directories, listed in `sfdx-project.json`; `KJ_Model` is the defa
 `.forceignore` excludes `**/docs/**`, `**/*.md`, `**/.gitkeep`, `package.xml` and LWC test files from deploys.
 
 ## Deploy
-Slate runs all deploys. Agents use `--dry-run` only.
-
 ```
 sf project deploy start --source-dir KJ_Tool KJ_Model KJ_Dispatch KJ_Engine --target-org kjhc-dev-org --dry-run
 sf project deploy start --source-dir KJ_Tool KJ_Model KJ_Dispatch KJ_Engine --target-org kjhc-dev-org --test-level RunLocalTests
