@@ -167,17 +167,17 @@ Most commands take `--target-org <alias>` (`-o`). Without it, they use the defau
 | Command | Does |
 |---|---|
 | `sf project generate --name <name>` | New SFDX project |
-| `sf project generate manifest --source-dir force-app --output-dir manifest` | `package.xml` from local source |
+| `sf project generate manifest --source-dir <domain> --output-dir manifest` | `package.xml` from local source |
 | `sf project generate manifest --from-org <alias> --output-dir manifest` | `package.xml` of everything in an org |
-| `sf apex generate class --name <Name> --output-dir force-app/main/default/classes` | New Apex class |
-| `sf apex generate trigger --name <Name> --sobject <Object> --output-dir force-app/main/default/triggers` | New Apex trigger |
-| `sf lightning generate component --type lwc --name <name> --output-dir force-app/main/default/lwc` | New LWC |
+| `sf apex generate class --name <Name> --output-dir <domain>/main/default/classes` | New Apex class |
+| `sf apex generate trigger --name <Name> --sobject <Object> --output-dir <domain>/main/default/triggers` | New Apex trigger |
+| `sf lightning generate component --type lwc --name <name> --output-dir <domain>/main/default/lwc` | New LWC |
 
 ### Metadata Retrieval
 
 | Command | Does |
 |---|---|
-| `sf project retrieve start --source-dir force-app` | Pull everything under `force-app` from the org |
+| `sf project retrieve start --source-dir <domain>` | Pull everything under `<domain>` from the org |
 | `sf project retrieve start --metadata ApexClass:<Name>` | Pull one class |
 | `sf project retrieve start --metadata "CustomObject:<Object__c>"` | Pull one object |
 | `sf project retrieve start --metadata ApexClass` | Pull all Apex classes |
@@ -191,15 +191,15 @@ Most commands take `--target-org <alias>` (`-o`). Without it, they use the defau
 
 | Command | Does |
 |---|---|
-| `sf project deploy start --source-dir force-app` | **⚠** Deploy everything under `force-app` |
+| `sf project deploy start --source-dir <domain>` | **⚠** Deploy everything under `<domain>` |
 | `sf project deploy start --metadata ApexClass:<Name>` | **⚠** Deploy one class |
 | `sf project deploy start --manifest manifest/package.xml` | **⚠** Deploy what's in a manifest |
-| `sf project deploy start --source-dir force-app --dry-run` | Validate without saving anything |
-| `sf project deploy start --source-dir force-app --test-level RunLocalTests` | **⚠** Deploy and run all local tests |
-| `sf project deploy start --source-dir force-app --test-level RunSpecifiedTests --tests <TestClass>` | **⚠** Deploy and run only named tests |
+| `sf project deploy start --source-dir <domain> --dry-run` | Validate without saving anything |
+| `sf project deploy start --source-dir <domain> --test-level RunLocalTests` | **⚠** Deploy and run all local tests |
+| `sf project deploy start --source-dir <domain> --test-level RunSpecifiedTests --tests <TestClass>` | **⚠** Deploy and run only named tests |
 | `sf project deploy start --manifest manifest/package.xml --post-destructive-changes manifest/destructiveChanges.xml` | **⚠** Deploy, then delete components listed in `destructiveChanges.xml` |
 | `sf project deploy preview` | Show what a tracked deploy would push |
-| `sf project deploy validate --source-dir force-app --test-level RunLocalTests` | Validate for a later quick deploy (returns a job ID) |
+| `sf project deploy validate --source-dir <domain> --test-level RunLocalTests` | Validate for a later quick deploy (returns a job ID) |
 | `sf project deploy quick --job-id <id>` | **⚠** Deploy a validated job without re-running tests |
 | `sf project deploy report --job-id <id>` | Status of a deploy |
 | `sf project deploy resume --job-id <id>` | Reattach to a deploy that timed out in the terminal |
