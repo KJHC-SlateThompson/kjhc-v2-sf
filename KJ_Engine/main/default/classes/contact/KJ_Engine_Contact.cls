@@ -59,6 +59,16 @@ public with sharing class KJ_Engine_Contact {
             if (record.Contact_Sector__c == null && record.AccountId != null){
                 record.Contact_Sector__c = parentAccount?.Account_Sector__c;
             }
+
+            // Record Origin
+            if(String.isBlank(record.Record_Origin__c)){
+                record.Record_Origin__c = 'KJHC Salesforce V2';
+            }
+
+            // Origin Created Date: the insert date when no origin system provided one
+            if(record.Origin_Created_Date__c == null){
+                record.Origin_Created_Date__c = System.today();
+            }
         }
     }
     public static void onBeforeUpdate(KJ_Tool_Package pkg){}
@@ -89,6 +99,17 @@ public with sharing class KJ_Engine_Contact {
         }
 
         update parentAccounts.values();
+
+        // Origin Record Id: the Salesforce Id when no origin system provided one (the Id only exists after insert)
+        Map<Id, SObject> updates = new Map<Id, SObject>();
+        for(Contact record : (List<Contact>) ctx.newList){
+            if(String.isBlank(record.Origin_Record_Id__c)){
+                updates.put(record.Id, new Contact(Id = record.Id, Origin_Record_Id__c = record.Id));
+            }
+        }
+        if(!updates.isEmpty()){
+            update updates.values();
+        }
     }
     public static void onAfterUpdate(KJ_Tool_Package pkg){}
     public static void onAfterDelete(KJ_Tool_Package pkg){}

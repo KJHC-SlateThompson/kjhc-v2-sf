@@ -44,7 +44,8 @@ public with sharing class KJ_Dispatch_CustomerProperty_Test {
     private static Customer_Property__c requery(Id recordId){
         return [
             SELECT Name, Property_Sector__c, Property_Address__Street__s, Property_Address__City__s,
-                Property_Address__StateCode__s, Property_Address__PostalCode__s, Property_Address__CountryCode__s
+                Property_Address__StateCode__s, Property_Address__PostalCode__s, Property_Address__CountryCode__s,
+                Record_Origin__c, Origin_Created_Date__c, Origin_Record_Id__c
             FROM Customer_Property__c
             WHERE Id = :recordId
         ];
@@ -102,6 +103,9 @@ public with sharing class KJ_Dispatch_CustomerProperty_Test {
         Assert.areEqual(KJ_Tool_TestDataFactory.DEFAULT_POSTAL_CODE, found.Property_Address__PostalCode__s,  'Postal code should copy from the owner service address');
         Assert.areEqual(KJ_Tool_TestDataFactory.DEFAULT_COUNTRY,     found.Property_Address__CountryCode__s, 'Country should copy from the owner service address');
         Assert.areEqual('42 Owner Ln', found.Name, 'A blank name should default to the street address');
+        Assert.areEqual('KJHC Salesforce V2', found.Record_Origin__c, 'A blank Record Origin should default to KJHC Salesforce V2');
+        Assert.areEqual(System.today(), found.Origin_Created_Date__c, 'A blank Origin Created Date should default to today');
+        Assert.areEqual(String.valueOf(record.Id), found.Origin_Record_Id__c, 'A blank Origin Record Id should default to the Salesforce Id');
     }
 
     // Every field the engine fills is already set, so nothing is overwritten.
@@ -112,12 +116,18 @@ public with sharing class KJ_Dispatch_CustomerProperty_Test {
         record.Name                        = 'Lake House';
         record.Property_Sector__c          = KJ_Model_Picklist.mapToString(KJ_Model_Picklist.Sector.COMMERCIAL);
         record.Property_Address__Street__s = '500 Own St';
+        record.Record_Origin__c            = KJ_Model_Picklist.mapToString(KJ_Model_Picklist.RecordOrigin.FIELDPULSE);
+        record.Origin_Created_Date__c      = KJ_Tool_TestDataFactory.DEFAULT_DATE;
+        record.Origin_Record_Id__c         = 'FP-CP-1001';
 
         Test.startTest();
         insert record;
         Test.stopTest();
 
         Customer_Property__c found = requery(record.Id);
+        Assert.areEqual('FieldPulse', found.Record_Origin__c, 'A provided Record Origin should be kept');
+        Assert.areEqual(KJ_Tool_TestDataFactory.DEFAULT_DATE, found.Origin_Created_Date__c, 'A provided Origin Created Date should be kept');
+        Assert.areEqual('FP-CP-1001', found.Origin_Record_Id__c, 'A provided Origin Record Id should be kept');
         Assert.areEqual('Lake House', found.Name, 'A provided name should not be replaced by the street');
         Assert.areEqual('Commercial', found.Property_Sector__c, 'A provided sector should not be replaced by the Account sector');
         Assert.areEqual('500 Own St', found.Property_Address__Street__s, 'A provided street should not be replaced by the owner service address');

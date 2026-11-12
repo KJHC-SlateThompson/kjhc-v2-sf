@@ -26,6 +26,9 @@ All in `KJ_Engine_HvacUnit`.
 | Event | What happens |
 |---|---|
 | Before insert | **Validation:** when `Membership__c` is set, `Membership__r.Member_Account__c` must equal `Customer_Property__r.Property_Owner_Account__c`. Otherwise a HIGH `VALIDATION_ERROR` is added on the record. |
+| Before insert | `Record_Origin__c` = `'KJHC Salesforce V2'` when blank |
+| Before insert | `Origin_Created_Date__c` = today when blank |
+| After insert | `Origin_Record_ID__c` = the record's Salesforce Id when blank (the Id only exists after insert, so this is one extra update per batch) |
 | All other events | None |
 
 ## Relationships
@@ -37,7 +40,7 @@ All in `KJ_Engine_HvacUnit`.
 
 | Test class | Methods |
 |---|---|
-| `KJ_Dispatch_HvacUnit_Test` | `receive_InvalidPackages_FailPath`, `receive_EmptyTriggerContext_HappyPath`, `insert_MembershipAccountValidation_MixedPath`, `hvacUnitTrigger_BulkBatch_HappyPath` |
+| `KJ_Dispatch_HvacUnit_Test` | `receive_InvalidPackages_FailPath`, `receive_EmptyTriggerContext_HappyPath`, `insert_MembershipAccountValidation_MixedPath`, `insert_OriginFields_HappyPath`, `hvacUnitTrigger_BulkBatch_HappyPath` |
 
 ## Status
 Stable. No model class.

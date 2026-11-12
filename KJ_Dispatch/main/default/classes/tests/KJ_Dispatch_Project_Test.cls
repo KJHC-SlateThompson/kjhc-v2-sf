@@ -43,7 +43,7 @@ public with sharing class KJ_Dispatch_Project_Test {
 
     private static Map<Id, Project__c> requery(List<Project__c> records){
         return new Map<Id, Project__c>([
-            SELECT Primary_Contact__c, Sector__c, Branch_Territory__c, Record_Origin__c, Project_Name__c,
+            SELECT Primary_Contact__c, Sector__c, Branch_Territory__c, Record_Origin__c, Origin_Created_Date__c, Origin_Record_ID__c, Project_Name__c,
                 Actual_Start_Date__c, Actual_End_Date__c, Scheduled_Start_Date__c
             FROM Project__c
             WHERE Id IN :records
@@ -110,6 +110,9 @@ public with sharing class KJ_Dispatch_Project_Test {
         Assert.areEqual('Residential', foundNoProperty.Sector__c,             'With no property, the Account sector should fill in');
         Assert.areEqual('Tulsa',       foundWithProperty.Branch_Territory__c, 'A blank territory should copy from the Account');
         Assert.areEqual('KJHC Salesforce V2', foundWithProperty.Record_Origin__c, 'A blank Record Origin should default to KJHC Salesforce V2');
+        Assert.areEqual(System.today(), foundWithProperty.Origin_Created_Date__c, 'A blank Origin Created Date should default to today');
+        Assert.areEqual(String.valueOf(withProperty.Id), foundWithProperty.Origin_Record_ID__c, 'A blank Origin Record Id should default to the Salesforce Id');
+        Assert.areEqual(String.valueOf(noProperty.Id), foundNoProperty.Origin_Record_ID__c, 'Every record in the batch should get its own Id');
 
         Assert.areEqual(System.today(), foundWithProperty.Actual_Start_Date__c, 'An In Progress Project should stamp actual start = today');
         Assert.isNull(foundWithProperty.Actual_End_Date__c,                      'An In Progress Project should not stamp actual end');
@@ -137,6 +140,8 @@ public with sharing class KJ_Dispatch_Project_Test {
         record.Sector__c            = 'Other';
         record.Branch_Territory__c  = 'NWA';
         record.Record_Origin__c     = KJ_Model_Picklist.mapToString(KJ_Model_Picklist.RecordOrigin.FIELDPULSE);
+        record.Origin_Created_Date__c = KJ_Tool_TestDataFactory.DEFAULT_DATE;
+        record.Origin_Record_ID__c  = 'FP-P-1001';
         record.Project_Status__c    = 'Completed';
         record.Actual_Start_Date__c = KJ_Tool_TestDataFactory.DEFAULT_DATE;
         record.Actual_End_Date__c   = KJ_Tool_TestDataFactory.DEFAULT_DATE.addDays(3);
@@ -151,6 +156,8 @@ public with sharing class KJ_Dispatch_Project_Test {
         Assert.areEqual('Other',           found.Sector__c,           'A provided sector should not be replaced by the property sector');
         Assert.areEqual('NWA',             found.Branch_Territory__c, 'A provided territory should be kept');
         Assert.areEqual('FieldPulse',      found.Record_Origin__c,    'A provided Record Origin should be kept');
+        Assert.areEqual(KJ_Tool_TestDataFactory.DEFAULT_DATE, found.Origin_Created_Date__c, 'A provided Origin Created Date should be kept');
+        Assert.areEqual('FP-P-1001',       found.Origin_Record_ID__c, 'A provided Origin Record Id should be kept');
         Assert.areEqual(KJ_Tool_TestDataFactory.DEFAULT_DATE,             found.Actual_Start_Date__c, 'A provided actual start should be kept');
         Assert.areEqual(KJ_Tool_TestDataFactory.DEFAULT_DATE.addDays(3), found.Actual_End_Date__c,   'A provided actual end should be kept');
     }

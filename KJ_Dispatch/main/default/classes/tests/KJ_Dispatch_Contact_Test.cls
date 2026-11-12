@@ -35,7 +35,7 @@ public with sharing class KJ_Dispatch_Contact_Test {
 
     private static Map<Id, Contact> requery(List<Contact> records){
         return new Map<Id, Contact>([
-            SELECT Contact_Method_Preference__c, Contact_Sector__c
+            SELECT Contact_Method_Preference__c, Contact_Sector__c, Record_Origin__c, Origin_Created_Date__c, Origin_Record_Id__c
             FROM Contact
             WHERE Id IN :records
         ]);
@@ -95,6 +95,9 @@ public with sharing class KJ_Dispatch_Contact_Test {
 
         for(Contact record : found.values()){
             Assert.areEqual('Residential', record.Contact_Sector__c, 'A blank sector should copy from the parent Account');
+            Assert.areEqual('KJHC Salesforce V2', record.Record_Origin__c, 'A blank Record Origin should default to KJHC Salesforce V2');
+            Assert.areEqual(System.today(), record.Origin_Created_Date__c, 'A blank Origin Created Date should default to today');
+            Assert.areEqual(String.valueOf(record.Id), record.Origin_Record_Id__c, 'A blank Origin Record Id should default to the Salesforce Id');
         }
 
         Account foundParent = [SELECT Account_Primary_Contact__c FROM Account WHERE Id = :parent.Id];
@@ -111,12 +114,18 @@ public with sharing class KJ_Dispatch_Contact_Test {
         Contact record = contactWith(parent.Id, KJ_Tool_TestDataFactory.DEFAULT_PHONE, null, null);
         record.Contact_Method_Preference__c = KJ_Model_Picklist.mapToString(KJ_Model_Picklist.ContactMethod.EMAIL);
         record.Contact_Sector__c            = KJ_Model_Picklist.mapToString(KJ_Model_Picklist.Sector.COMMERCIAL);
+        record.Record_Origin__c             = KJ_Model_Picklist.mapToString(KJ_Model_Picklist.RecordOrigin.FIELDPULSE);
+        record.Origin_Created_Date__c       = KJ_Tool_TestDataFactory.DEFAULT_DATE;
+        record.Origin_Record_Id__c          = 'FP-C-1001';
 
         Test.startTest();
         insert record;
         Test.stopTest();
 
         Contact found = requery(new List<Contact>{ record }).get(record.Id);
+        Assert.areEqual('FieldPulse', found.Record_Origin__c, 'A provided Record Origin should be kept');
+        Assert.areEqual(KJ_Tool_TestDataFactory.DEFAULT_DATE, found.Origin_Created_Date__c, 'A provided Origin Created Date should be kept');
+        Assert.areEqual('FP-C-1001', found.Origin_Record_Id__c, 'A provided Origin Record Id should be kept');
         Assert.areEqual('Email', found.Contact_Method_Preference__c, 'A provided preference should be kept even when only a phone is on file');
         Assert.areEqual('Commercial', found.Contact_Sector__c, 'A provided sector should not be replaced by the Account sector');
 

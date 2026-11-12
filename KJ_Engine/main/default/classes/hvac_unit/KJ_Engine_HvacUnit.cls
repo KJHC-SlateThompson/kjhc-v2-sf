@@ -47,12 +47,35 @@ public with sharing class KJ_Engine_HvacUnit {
 
                 continue;
             }
+
+            // Record Origin
+            if(String.isBlank(record.Record_Origin__c)){
+                record.Record_Origin__c = 'KJHC Salesforce V2';
+            }
+
+            // Origin Created Date: the insert date when no origin system provided one
+            if(record.Origin_Created_Date__c == null){
+                record.Origin_Created_Date__c = System.today();
+            }
         }
     }
     public static void onBeforeUpdate(KJ_Tool_Package pkg){}
     public static void onBeforeDelete(KJ_Tool_Package pkg){}
 
-    public static void onAfterInsert(KJ_Tool_Package pkg){}
+    public static void onAfterInsert(KJ_Tool_Package pkg){
+        KJ_Tool_TriggerContext ctx = pkg.triggerContext;
+
+        // Origin Record Id: the Salesforce Id when no origin system provided one (the Id only exists after insert)
+        Map<Id, SObject> updates = new Map<Id, SObject>();
+        for(HVAC_Unit__c record : (List<HVAC_Unit__c>) ctx.newList){
+            if(String.isBlank(record.Origin_Record_ID__c)){
+                updates.put(record.Id, new HVAC_Unit__c(Id = record.Id, Origin_Record_ID__c = record.Id));
+            }
+        }
+        if(!updates.isEmpty()){
+            update updates.values();
+        }
+    }
     public static void onAfterUpdate(KJ_Tool_Package pkg){}
     public static void onAfterDelete(KJ_Tool_Package pkg){}
     public static void onAfterUndelete(KJ_Tool_Package pkg){}

@@ -29,6 +29,9 @@ All in `KJ_Engine_Contact`.
 | Before insert | **Validation:** at least one of `Phone`, `Email` or `MailingStreet` is required. Otherwise a HIGH `VALIDATION_ERROR` is added on the record. |
 | Before insert | `Contact_Method_Preference__c` is set when blank and exactly one of Phone/Email is present: `'Phone'` or `'Email'` |
 | Before insert | `Contact_Sector__c` is copied from `Account.Account_Sector__c` when blank and `AccountId` is set |
+| Before insert | `Record_Origin__c` = `'KJHC Salesforce V2'` when blank |
+| Before insert | `Origin_Created_Date__c` = today when blank |
+| After insert | `Origin_Record_Id__c` = the record's Salesforce Id when blank (the Id only exists after insert, so this is one extra update per batch) |
 | After insert | `Account.Account_Primary_Contact__c` is set to this Contact when blank on the parent Account. The first Contact in the batch wins. |
 | Before update, delete; after update, delete, undelete | None |
 

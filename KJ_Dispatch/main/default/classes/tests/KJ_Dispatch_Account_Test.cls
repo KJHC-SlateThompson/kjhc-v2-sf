@@ -41,7 +41,7 @@ public with sharing class KJ_Dispatch_Account_Test {
 
     private static Map<Id, Account> requery(List<Account> records){
         return new Map<Id, Account>([
-            SELECT Customer_Since__c, Record_Origin__c, Branch_Territory__c, Archived__c, Name,
+            SELECT Customer_Since__c, Record_Origin__c, Origin_Created_Date__c, Origin_Record_Id__c, Branch_Territory__c, Archived__c, Name,
                 BillingStreet, BillingCity, BillingStateCode, BillingPostalCode, BillingCountryCode
             FROM Account
             WHERE Id IN :records
@@ -101,6 +101,9 @@ public with sharing class KJ_Dispatch_Account_Test {
         Assert.isNull(foundLead.Customer_Since__c, 'A Lead should not get Customer Since');
 
         Assert.areEqual('KJHC Salesforce V2', foundCustomer.Record_Origin__c, 'A blank Record Origin should default to KJHC Salesforce V2');
+        Assert.areEqual(System.today(), foundCustomer.Origin_Created_Date__c, 'A blank Origin Created Date should default to today');
+        Assert.areEqual(String.valueOf(customer.Id), foundCustomer.Origin_Record_Id__c, 'A blank Origin Record Id should default to the Salesforce Id');
+        Assert.areEqual(String.valueOf(lead.Id), foundLead.Origin_Record_Id__c, 'Every record in the batch should get its own Id');
 
         Assert.areEqual(KJ_Tool_TestDataFactory.DEFAULT_STREET,      foundCustomer.BillingStreet,      'Billing street should copy from the service address');
         Assert.areEqual(KJ_Tool_TestDataFactory.DEFAULT_CITY,        foundCustomer.BillingCity,        'Billing city should copy from the service address');
@@ -120,6 +123,8 @@ public with sharing class KJ_Dispatch_Account_Test {
         record.Account_Status__c   = CURRENT_CUSTOMER;
         record.Customer_Since__c   = KJ_Tool_TestDataFactory.DEFAULT_DATE;
         record.Record_Origin__c    = KJ_Model_Picklist.mapToString(KJ_Model_Picklist.RecordOrigin.FIELDPULSE);
+        record.Origin_Created_Date__c = KJ_Tool_TestDataFactory.DEFAULT_DATE;
+        record.Origin_Record_Id__c = '14615267';
         record.BillingStreet       = '999 Billing Ave';
         record.Branch_Territory__c = 'NWA';
 
@@ -130,6 +135,8 @@ public with sharing class KJ_Dispatch_Account_Test {
         Account found = requery(new List<Account>{ record }).get(record.Id);
         Assert.areEqual(KJ_Tool_TestDataFactory.DEFAULT_DATE, found.Customer_Since__c, 'A provided Customer Since should be kept');
         Assert.areEqual('FieldPulse',      found.Record_Origin__c,    'A provided Record Origin should be kept');
+        Assert.areEqual(KJ_Tool_TestDataFactory.DEFAULT_DATE, found.Origin_Created_Date__c, 'A provided Origin Created Date should be kept');
+        Assert.areEqual('14615267',        found.Origin_Record_Id__c, 'A provided Origin Record Id should be kept');
         Assert.areEqual('999 Billing Ave', found.BillingStreet,       'A provided billing address should not be replaced by the service address');
         Assert.areEqual('NWA',             found.Branch_Territory__c, 'A provided territory should not be replaced by the service address state');
     }
@@ -182,6 +189,24 @@ public with sharing class KJ_Dispatch_Account_Test {
             'The blocked delete should tell the user to archive instead'
         );
         Assert.isTrue(results[1].isSuccess(), 'An Account with no related records should delete');
+        Assert.areEqual(1, [SELECT COUNT() FROM Contact WHERE AccountId = :withContact.Id], 'The blocked delete should keep the Contact');
+    }
+
+    // A merge deletes the losing Account after moving its children to the master, so the guard lets it through.
+    @isTest
+    static void merge_LoserWithRelatedRecords_HappyPath(){
+        Account master = KJ_Tool_TestDataFactory.createTestAccount();
+        Account loser  = KJ_Tool_TestDataFactory.createTestAccount();
+        insert new List<Account>{ master, loser };
+        insert KJ_Tool_TestDataFactory.createTestContact(KJ_Tool_TestDataFactory.DEFAULT_SECTOR, loser.Id);
+
+        Test.startTest();
+        Database.MergeResult result = Database.merge(master, loser.Id, false);
+        Test.stopTest();
+
+        Assert.isTrue(result.isSuccess(), 'A merge loser with related records should be deletable: ' + result.getErrors());
+        Assert.areEqual(1, [SELECT COUNT() FROM Contact WHERE AccountId = :master.Id], 'The loser\'s Contact should move to the master');
+        Assert.areEqual(0, [SELECT COUNT() FROM Account WHERE Id = :loser.Id], 'The loser should be deleted');
     }
 
 

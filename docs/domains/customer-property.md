@@ -28,7 +28,10 @@ All in `KJ_Engine_CustomerProperty`.
 | Before insert | `Property_Sector__c` is copied from `Property_Owner_Account__r.Account_Sector__c` when blank |
 | Before insert | `Property_Address__c` components (street, city, state code, postal code, country code) are copied from the owner Account's `Service_Address__c` when the property street is blank and the Account's isn't |
 | Before insert | `Name` = `Property_Address__Street__s` when blank |
-| All other events | None. `onAfterDelete` holds only a `// disconnect related objects` comment. |
+| Before insert | `Record_Origin__c` = `'KJHC Salesforce V2'` when blank |
+| Before insert | `Origin_Created_Date__c` = today when blank |
+| After insert | `Origin_Record_Id__c` = the record's Salesforce Id when blank (the Id only exists after insert, so this is one extra update per batch) |
+| All other events | None except the after insert above. `onAfterDelete` holds only a `// disconnect related objects` comment. |
 
 ## Relationships
 - `Property_Owner_Account__c` → Account: required, delete Restrict (relationship `Customer_Properties`).

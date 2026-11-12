@@ -99,6 +99,33 @@ public with sharing class KJ_Dispatch_HvacUnit_Test {
         Assert.isTrue(results[2].isSuccess(), 'A unit with no membership should be allowed');
     }
 
+    // Origin fields: blanks are filled (Origin Record Id after insert, once the Id exists); provided values are kept.
+    @isTest
+    static void insert_OriginFields_HappyPath(){
+        Customer_Property__c property = insertProperty(insertAccount().Id);
+        HVAC_Unit__c blank    = KJ_Tool_TestDataFactory.createTest_HVAC_Unit(null, property.Id);
+        HVAC_Unit__c provided = KJ_Tool_TestDataFactory.createTest_HVAC_Unit(null, property.Id);
+        provided.Record_Origin__c       = KJ_Model_Picklist.mapToString(KJ_Model_Picklist.RecordOrigin.FIELDPULSE);
+        provided.Origin_Created_Date__c = KJ_Tool_TestDataFactory.DEFAULT_DATE;
+        provided.Origin_Record_ID__c    = 'FP-U-1001';
+
+        Test.startTest();
+        insert new List<HVAC_Unit__c>{ blank, provided };
+        Test.stopTest();
+
+        Map<Id, HVAC_Unit__c> found = new Map<Id, HVAC_Unit__c>([
+            SELECT Record_Origin__c, Origin_Created_Date__c, Origin_Record_ID__c
+            FROM HVAC_Unit__c
+            WHERE Id IN :new List<Id>{ blank.Id, provided.Id }
+        ]);
+        Assert.areEqual('KJHC Salesforce V2', found.get(blank.Id).Record_Origin__c, 'A blank Record Origin should default to KJHC Salesforce V2');
+        Assert.areEqual(System.today(), found.get(blank.Id).Origin_Created_Date__c, 'A blank Origin Created Date should default to today');
+        Assert.areEqual(String.valueOf(blank.Id), found.get(blank.Id).Origin_Record_ID__c, 'A blank Origin Record Id should default to the Salesforce Id');
+        Assert.areEqual('FieldPulse', found.get(provided.Id).Record_Origin__c, 'A provided Record Origin should be kept');
+        Assert.areEqual(KJ_Tool_TestDataFactory.DEFAULT_DATE, found.get(provided.Id).Origin_Created_Date__c, 'A provided Origin Created Date should be kept');
+        Assert.areEqual('FP-U-1001', found.get(provided.Id).Origin_Record_ID__c, 'A provided Origin Record Id should be kept');
+    }
+
 
     //*-- Bulk ------------------------------------------------------------------------------------
     // A full 200-record trigger batch through insert, update, delete and undelete stays inside governor limits.

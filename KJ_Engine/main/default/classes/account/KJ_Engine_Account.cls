@@ -7,6 +7,13 @@
 */
 public with sharing class KJ_Engine_Account {
 
+    //*-- Constants -------------------------------------------------------------------------------
+    private static final String RELATED_RECORDS_ERROR = 'This Account has related records. Archive it instead of deleting it.';
+
+    //*-- Member Variables ------------------------------------------------------------------------
+    // Accounts found with related records in before delete. The block is applied in after delete, the
+    // only event where MasterRecordId is set, so merge losers (whose children move to the master) can go.
+    private static Set<Id> accountsWithRelatedRecords = new Set<Id>();
 
     //*-- Static Methods --------------------------------------------------------------------------
     // Triggered methods
@@ -26,6 +33,11 @@ public with sharing class KJ_Engine_Account {
             // Setting Default Record Origin
             if(record.Record_Origin__c == null || record.Record_Origin__c == ''){
                 record.Record_Origin__c = 'KJHC Salesforce V2';
+            }
+
+            // Origin Created Date: the insert date when no origin system provided one
+            if(record.Origin_Created_Date__c == null){
+                record.Origin_Created_Date__c = System.today();
             }
 
             // Setting Billing Address from Service Address if blank
@@ -67,7 +79,8 @@ public with sharing class KJ_Engine_Account {
     public static void onBeforeDelete(KJ_Tool_Package pkg){
         KJ_Tool_TriggerContext ctx = pkg.triggerContext;
 
-        // Block deleting Accounts that still have related records; Customer Properties are already blocked by their Restrict lookup
+        // Note Accounts that still have related records; onAfterDelete blocks them unless they lost a merge.
+        // Customer Properties are already blocked by their Restrict lookup.
         for(Account found : [
             SELECT Id,
                 (SELECT Id FROM Contacts LIMIT 1),
@@ -83,14 +96,36 @@ public with sharing class KJ_Engine_Account {
                 !found.Memberships__r.isEmpty() ||
                 !found.Projects__r.isEmpty()
             ){
-                ctx.oldMap.get(found.Id).addError('This Account has related records. Archive it instead of deleting it.');
+                accountsWithRelatedRecords.add(found.Id);
             }
         }
     }
 
-    public static void onAfterInsert(KJ_Tool_Package pkg){}
+    public static void onAfterInsert(KJ_Tool_Package pkg){
+        KJ_Tool_TriggerContext ctx = pkg.triggerContext;
+
+        // Origin Record Id: the Salesforce Id when no origin system provided one (the Id only exists after insert)
+        Map<Id, SObject> updates = new Map<Id, SObject>();
+        for(Account record : (List<Account>) ctx.newList){
+            if(String.isBlank(record.Origin_Record_Id__c)){
+                updates.put(record.Id, new Account(Id = record.Id, Origin_Record_Id__c = record.Id));
+            }
+        }
+        if(!updates.isEmpty()){
+            update updates.values();
+        }
+    }
     public static void onAfterUpdate(KJ_Tool_Package pkg){}
-    public static void onAfterDelete(KJ_Tool_Package pkg){}
+    public static void onAfterDelete(KJ_Tool_Package pkg){
+        KJ_Tool_TriggerContext ctx = pkg.triggerContext;
+
+        // Block the delete of Accounts with related records, except merge losers (MasterRecordId set)
+        for(Account record : (List<Account>) ctx.oldList){
+            if(accountsWithRelatedRecords.remove(record.Id) && record.MasterRecordId == null){
+                record.addError(RELATED_RECORDS_ERROR);
+            }
+        }
+    }
     public static void onAfterUndelete(KJ_Tool_Package pkg){}
     
     // Called methods

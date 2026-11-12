@@ -31,10 +31,12 @@ All in `KJ_Engine_Project`, before insert. The validations run first, and a fail
 | Before insert | `Sector__c` = `Customer_Property__r.Property_Sector__c`, falling back to `Parent_Account__r.Account_Sector__c`, when blank |
 | Before insert | `Branch_Territory__c` = `Parent_Account__r.Branch_Territory__c` when blank |
 | Before insert | `Record_Origin__c` = `'KJHC Salesforce V2'` when blank |
+| Before insert | `Origin_Created_Date__c` = today when blank |
+| After insert | `Origin_Record_ID__c` = the record's Salesforce Id when blank (the Id only exists after insert, so this is one extra update per batch) |
 | Before insert | `Actual_Start_Date__c` = today when `Project_Status__c = 'In Progress'` and it's blank |
 | Before insert | `Actual_End_Date__c` = today when `Project_Status__c = 'Completed'` and it's blank |
 | Before insert | `Project_Name__c` = `<Property street> - <Scheduled_Start_Date__c>` when blank and both values exist (commit `569f35d`) |
-| All other events | None. `onAfterDelete` holds only a `// disconnect related objects` comment. |
+| All other events | None except the after insert above. `onAfterDelete` holds only a `// disconnect related objects` comment. |
 
 ## Relationships
 - `Parent_Account__c` → Account (SetNull, relationship `Projects`).

@@ -107,6 +107,11 @@ public with sharing class KJ_Engine_Project {
                 record.Record_Origin__c = 'KJHC Salesforce V2';
             }
 
+            // Origin Created Date: the insert date when no origin system provided one
+            if(record.Origin_Created_Date__c == null){
+                record.Origin_Created_Date__c = System.today();
+            }
+
             // Stamp times from status
             if(record.Project_Status__c == 'In Progress' && record.Actual_Start_Date__c == null){
                 record.Actual_Start_Date__c = System.today();
@@ -128,7 +133,20 @@ public with sharing class KJ_Engine_Project {
     public static void onBeforeUpdate(KJ_Tool_Package pkg){}
     public static void onBeforeDelete(KJ_Tool_Package pkg){}
 
-    public static void onAfterInsert(KJ_Tool_Package pkg){}
+    public static void onAfterInsert(KJ_Tool_Package pkg){
+        KJ_Tool_TriggerContext ctx = pkg.triggerContext;
+
+        // Origin Record Id: the Salesforce Id when no origin system provided one (the Id only exists after insert)
+        Map<Id, SObject> updates = new Map<Id, SObject>();
+        for(Project__c record : (List<Project__c>) ctx.newList){
+            if(String.isBlank(record.Origin_Record_ID__c)){
+                updates.put(record.Id, new Project__c(Id = record.Id, Origin_Record_ID__c = record.Id));
+            }
+        }
+        if(!updates.isEmpty()){
+            update updates.values();
+        }
+    }
     public static void onAfterUpdate(KJ_Tool_Package pkg){}
     public static void onAfterDelete(KJ_Tool_Package pkg){
         // disconnect related objects
